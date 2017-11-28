@@ -8,7 +8,7 @@ properties.load(gradlePropertiesFile.newDataInputStream())
 def moduleName = properties.getProperty("MAVEN_POM_ARTIFACT_ID")
 
 // 作为外部模块打包时，需要加上前缀
-println "[${moduleName}] uploadPrefix is '${uploadPrefix}'"
+println "[${moduleName}] module loaded"
 include ":${moduleName}"
 project(":${moduleName}").projectDir = file('../library')
 

@@ -23,7 +23,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':randroid-base')
     compile SUPPORT_V4_LIB
+    compile RX_JAVA_LIB
+    compile RX_ANROID_LIB
 }
 
 if (propertyTrue('AR_SINGLE_LIB')) {

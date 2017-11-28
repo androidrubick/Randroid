@@ -1,0 +1,3 @@
+[submodule "androidrubick-libraries/Randroid-base"]
+	path = androidrubick-libraries/Randroid-base
+	url = https://github.com/androidrubick/Randroid-base
