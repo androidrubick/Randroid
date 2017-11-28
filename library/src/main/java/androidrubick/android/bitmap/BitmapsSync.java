@@ -19,7 +19,7 @@ import androidrubick.android.io.IOUtils;
  * <p>
  * Created by Yin Yong on 2017/11/15.
  *
- * @since 2.3.0
+ * @since 1.0.0
  */
 public class BitmapsSync {
 
@@ -28,9 +28,11 @@ public class BitmapsSync {
      *
      * @param loader {@link Bitmap}加载器
      * @return 如果加载成功回调将会返回最终加载的图片
+     *
+     * @since 1.0.0
      */
     public static Bitmap load(BitmapLoader loader) {
-        return load(loader, DecodeParam.NOTHING);
+        return load(loader, null);
     }
 
     /**
@@ -38,6 +40,8 @@ public class BitmapsSync {
      *
      * @param loader {@link Bitmap}加载器
      * @return 如果加载成功回调将会返回最终加载的图片
+     *
+     * @since 1.0.0
      */
     public static Bitmap load(BitmapLoader loader, DecodeParam param) {
         if (null == loader) {
@@ -45,7 +49,7 @@ public class BitmapsSync {
         }
 
         // use dummy
-        if (null == param)  param = DecodeParam.NOTHING;
+        if (null == param)  param = DecodeParam.none();
 
         if (!param.hasValidPreference()) return loader.load(null);
 
@@ -89,9 +93,11 @@ public class BitmapsSync {
      *
      * @param file 要加载的文件对象
      * @return 如果加载成功回调将会返回最终加载的图片
+     *
+     * @since 1.0.0
      */
     public static Bitmap load(File file) {
-        return load(file, DecodeParam.NOTHING);
+        return load(file, null);
     }
 
     /**
@@ -100,6 +106,8 @@ public class BitmapsSync {
      * @param file  文件对象
      * @param param 加载参数
      * @return 如果加载成功回调将会返回最终加载的图片
+     *
+     * @since 1.0.0
      */
     @Nullable
     public static Bitmap load(File file, DecodeParam param) {
@@ -113,6 +121,8 @@ public class BitmapsSync {
      * @param param 保存时用的压缩参数，包含格式和质量
      * @param file  要保存到的文件对象
      * @return 是否保存成功
+     *
+     * @since 1.0.0
      */
     public static boolean save(Bitmap bm, CompressParam param, File file) {
         if (null == bm || null == param || null == file || file.isDirectory()) {
@@ -139,6 +149,8 @@ public class BitmapsSync {
      * @param bm    源图片
      * @param scale 缩放比率
      * @return 如果创建成功，返回新的图片
+     *
+     * @since 1.0.0
      */
     @Nullable
     public static Bitmap scale(Bitmap bm, @FloatRange(from = 0, to = 1, fromInclusive = false) float scale) {

@@ -1,11 +1,11 @@
 package androidrubick.android.bitmap;
 
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.support.annotation.FloatRange;
 
 import java.io.File;
 
+import androidrubick.android.async.AsyncOp;
 import androidrubick.android.bitmap.loader.BitmapLoader;
 import androidrubick.android.bitmap.loader.BitmapLoaderFactory;
 
@@ -19,13 +19,25 @@ import androidrubick.android.bitmap.loader.BitmapLoaderFactory;
  */
 public class BitmapsAsync {
 
+    private static abstract class Async extends AsyncOp<Void, Void, Bitmap> {
+        private final OpPCallback<Bitmap> mCb;
+        Async(OpPCallback<Bitmap> cb) {
+            mCb = cb;
+        }
+
+        @Override
+        protected final void onPostExecute(Bitmap result) {
+            mCb.opResult(null != result, result);
+        }
+    }
+
     /**
      * 异步加载图片
      *
      * @param loader {@link Bitmap}加载器
      */
     public static void load(final BitmapLoader loader, final OpPCallback<Bitmap> cb) {
-        load(loader, DecodeParam.NOTHING, cb);
+        load(loader, null, cb);
     }
 
     /**
@@ -36,17 +48,13 @@ public class BitmapsAsync {
      */
     public static void load(final BitmapLoader loader, final DecodeParam param, final OpPCallback<Bitmap> cb) {
         if (null == cb) return;
-        new AsyncTask<Void, Void, Bitmap>() {
+
+        new Async(cb) {
             @Override
-            protected Bitmap doInBackground(Void... params) {
+            protected final Bitmap doInBackground(Void... params) {
                 return BitmapsSync.load(loader, param);
             }
-
-            @Override
-            protected void onPostExecute(Bitmap result) {
-                cb.opResult(null != result, result);
-            }
-        }.execute((Void[]) null);
+        }.execute();
     }
 
     /**
@@ -56,7 +64,7 @@ public class BitmapsAsync {
      * @param cb   回调，如果加载成功回调将会返回最终加载的图片
      */
     public static void load(final File file, final OpPCallback<Bitmap> cb) {
-        load(file, DecodeParam.NOTHING, cb);
+        load(file, null, cb);
     }
 
     /**
@@ -82,7 +90,7 @@ public class BitmapsAsync {
                             final OpCallback cb) {
         if (null == cb) return;
 
-        new AsyncTask<Void, Void, Boolean>() {
+        new AsyncOp<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
                 return BitmapsSync.save(bm, param, file);
@@ -92,7 +100,7 @@ public class BitmapsAsync {
             protected void onPostExecute(Boolean result) {
                 cb.opResult(null != result && result);
             }
-        }.execute((Void[]) null);
+        }.execute();
     }
 
     /**
@@ -106,16 +114,11 @@ public class BitmapsAsync {
                              final OpPCallback<Bitmap> cb) {
         if (null == cb) return;
 
-        new AsyncTask<Void, Void, Bitmap>() {
+        new Async(cb) {
             @Override
             protected Bitmap doInBackground(Void... params) {
                 return BitmapsSync.scale(bm, scale);
             }
-
-            @Override
-            protected void onPostExecute(Bitmap result) {
-                cb.opResult(null != result, result);
-            }
-        }.execute((Void[]) null);
+        }.execute();
     }
 }

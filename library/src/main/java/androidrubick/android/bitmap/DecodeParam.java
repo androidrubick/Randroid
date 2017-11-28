@@ -67,12 +67,17 @@ public class DecodeParam {
      */
     public int outHeight = -1;
 
-    /*package*/ static final DecodeParam NOTHING = new DecodeParam();
-
     /*package*/ DecodeParam() {
         this.inPreferredWidth = -1;
         this.inPreferredHeight = -1;
         this.inScale = -1;
+    }
+
+    /**
+     * @since 1.0.0
+     */
+    public static DecodeParam none() {
+        return new DecodeParam();
     }
 
     /**
