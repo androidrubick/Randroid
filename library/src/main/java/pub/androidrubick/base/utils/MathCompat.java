@@ -4,6 +4,8 @@ package pub.androidrubick.base.utils;
  * <p/>
  *
  * Created by Yin Yong on 2015/9/8.
+ *
+ * @since 1.0
  */
 public class MathCompat {
 

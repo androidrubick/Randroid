@@ -223,6 +223,22 @@ public class CollectionsCompat {
     }
 
     /**
+     * 从<code>map</code>中获取<code>key</code>对应的值
+     *
+     * @since 1.0
+     */
+    public static <K, V, R extends Map<? super K, V>, Result extends V>Result getValue(R map, K key, Result placeholder) {
+        if (isEmpty(map)) {
+            return placeholder;
+        }
+        Result result = (Result) map.get(key);
+        if (null == result && !map.containsKey(key)) {
+            result = placeholder;
+        }
+        return result;
+    }
+
+    /**
      * 判断<code>map</code>中hi否有<code>key</code>
      *
      * @since 1.0

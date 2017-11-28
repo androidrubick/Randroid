@@ -16,6 +16,8 @@ public class IfSetter<T> {
 
     /**
      * 设值
+     *
+     * @since 1.0
      */
     public void set(T value) {
         ifSet.set(true);
@@ -24,6 +26,8 @@ public class IfSetter<T> {
 
     /**
      * 清除设值状态
+     *
+     * @since 1.0
      */
     public void clear() {
         ifSet.set(false);
@@ -32,6 +36,8 @@ public class IfSetter<T> {
 
     /**
      * 获取当前设值
+     *
+     * @since 1.0
      */
     public T get() {
         return this.value;
@@ -39,6 +45,8 @@ public class IfSetter<T> {
 
     /**
      * 是否已经设值
+     *
+     * @since 1.0
      */
     public boolean isSet() {
         return this.ifSet.get();

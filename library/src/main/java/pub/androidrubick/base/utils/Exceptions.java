@@ -10,6 +10,11 @@ package pub.androidrubick.base.utils;
 public class Exceptions {
     private Exceptions() { }
 
+    /**
+     * cast or wrap target {@link Throwable} to a {@link RuntimeException}
+     *
+     * @since 1.0.0
+     */
     public static RuntimeException asRuntime(Throwable e) {
         if (e instanceof RuntimeException) {
             return (RuntimeException) e;
@@ -17,6 +22,11 @@ public class Exceptions {
         return new DummyRuntimeException(e);
     }
 
+    /**
+     * create a {@link RuntimeException} by the specific {@code msg}
+     *
+     * @since 1.0.0
+     */
     public static RuntimeException asRuntime(String msg) {
         return new RuntimeException(msg);
     }

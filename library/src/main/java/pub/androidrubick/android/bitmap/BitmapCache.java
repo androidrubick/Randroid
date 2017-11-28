@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import pub.androidrubick.base.logging.ARLogger;
 
 /**
- * AQuery internal use only.
+ * @since 1.0.0
  */
 public class BitmapCache extends LinkedHashMap<String, Bitmap> {
 
@@ -35,6 +35,13 @@ public class BitmapCache extends LinkedHashMap<String, Bitmap> {
     private int maxTotalPixels;
     private int pixels;
 
+    /**
+     *
+     * @param mc max count of {@link Bitmap}
+     * @param mp max pixels
+     * @param mtp max total pixels
+     * @since 1.0.0
+     */
     public BitmapCache(int mc, int mp, int mtp) {
         super(8, 0.75F, true);
 
@@ -43,6 +50,9 @@ public class BitmapCache extends LinkedHashMap<String, Bitmap> {
         this.maxTotalPixels = mtp;
     }
 
+    /**
+     * @since 1.0.0
+     */
     @Override
     public Bitmap put(String key, Bitmap bm) {
         Bitmap old = null;
@@ -60,6 +70,9 @@ public class BitmapCache extends LinkedHashMap<String, Bitmap> {
         return old;
     }
 
+    /**
+     * @since 1.0.0
+     */
     @Override
     public Bitmap remove(Object key) {
         Bitmap old = super.remove(key);
@@ -70,6 +83,9 @@ public class BitmapCache extends LinkedHashMap<String, Bitmap> {
         return old;
     }
 
+    /**
+     * @since 1.0.0
+     */
     @Override
     public void clear() {
         super.clear();
@@ -95,6 +111,9 @@ public class BitmapCache extends LinkedHashMap<String, Bitmap> {
         }
     }
 
+    /**
+     * @since 1.0.0
+     */
     @Override
     public boolean removeEldestEntry(Entry<String, Bitmap> eldest) {
         if (pixels > maxTotalPixels || size() > maxCount) {
