@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
  *
  * @since 1.0.0
  */
-public abstract class BitmapTrySizeAdapter implements BitmapTrySize {
+public abstract class TrySizeAdapter implements BitmapTrySize {
 
     private final int mOriginWidth;
     private final int mOriginHeight;
@@ -24,27 +24,16 @@ public abstract class BitmapTrySizeAdapter implements BitmapTrySize {
      * @param originHeight origin height, (0, +)
      * @since 1.0.0
      */
-    public BitmapTrySizeAdapter(int originWidth, int originHeight) {
+    public TrySizeAdapter(int originWidth, int originHeight) {
         mOriginWidth = Math.max(0, originWidth);
         mOriginHeight = Math.max(0, originHeight);
-    }
-
-    /**
-     * OOM decrement
-     *
-     * @param decrement decrement factor, (0, +), default is 0.05
-     * @since 1.0.0
-     */
-    public BitmapTrySizeAdapter decBy(@FloatRange(from = 0, fromInclusive = false) float decrement) {
-        mDecrement = Math.max(0, decrement);
-        return this;
     }
 
     /**
      * @param scale (0, +)
      * @since 1.0.0
      */
-    public BitmapTrySizeAdapter preferredScale(
+    public TrySizeAdapter preferredScale(
             @FloatRange(from = 0, fromInclusive = false) float scale
     ) {
         mPreferredScaleStart = Math.max(0, scale);
@@ -57,12 +46,23 @@ public abstract class BitmapTrySizeAdapter implements BitmapTrySize {
      * @param scaleEnd   (0, +)
      * @since 1.0.0
      */
-    public BitmapTrySizeAdapter preferredScaleRange(
+    public TrySizeAdapter preferredScaleRange(
             @FloatRange(from = 0, fromInclusive = false) float scaleStart,
             @FloatRange(from = 0, fromInclusive = false) float scaleEnd
     ) {
         mPreferredScaleStart = Math.max(0, scaleStart);
         mPreferredScaleEnd = Math.max(0, scaleEnd);
+        return this;
+    }
+
+    /**
+     * scale decrement, when OOM, decrease scale by this factor
+     *
+     * @param decrement decrement factor, (0, +), default is 0.05
+     * @since 1.0.0
+     */
+    public TrySizeAdapter decBy(@FloatRange(from = 0, fromInclusive = false) float decrement) {
+        mDecrement = Math.max(0, decrement);
         return this;
     }
 

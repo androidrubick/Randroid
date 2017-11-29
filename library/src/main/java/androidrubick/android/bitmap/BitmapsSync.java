@@ -12,6 +12,9 @@ import java.io.FileOutputStream;
 import androidrubick.android.bitmap.loader.BitmapLoader;
 import androidrubick.android.bitmap.loader.BitmapLoaderFactory;
 import androidrubick.android.io.IOUtils;
+import androidrubick.base.logging.ARLogger;
+
+import static androidrubick.android.bitmap.Bitmaps.loadIgnoreExc;
 
 /**
  * 同步处理{@link Bitmap}相关的方法
@@ -69,7 +72,7 @@ public class BitmapsSync {
         if (null == loader) return null;
 
         // use dummy
-        if (null == param || !param.hasValidPreference()) return loader.load(null);
+        if (null == param || !param.hasValidPreference()) return loadIgnoreExc(loader, null);
 
         float scale = Bitmaps.calScale(loader, param);
         if (param.outWidth <= 0 || param.outHeight <= 0) return null;
@@ -78,8 +81,8 @@ public class BitmapsSync {
 
         BitmapFactory.Options sampleOps = new BitmapFactory.Options();
         sampleOps.inSampleSize = sampleSize;
-        Bitmap bm = loader.load(sampleOps);
 
+        Bitmap bm = loadIgnoreExc(loader, sampleOps);
         if (null == bm) {
             return null;
         }
@@ -135,7 +138,7 @@ public class BitmapsSync {
             outputStream.flush();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            ARLogger.warning("BitmapsSync save error", e);
             return false;
         } finally {
             IOUtils.close(outputStream);
@@ -168,7 +171,7 @@ public class BitmapsSync {
             canvas.drawBitmap(bm, 0, 0, null);
             return result;
         } catch (Throwable e) {
-            e.printStackTrace();
+            ARLogger.warning("BitmapsSync scale error", e);
             return null;
         }
     }
@@ -202,7 +205,7 @@ public class BitmapsSync {
             canvas.drawBitmap(bm, 0, 0, null);
             return result;
         } catch (Throwable e) {
-            e.printStackTrace();
+            ARLogger.warning("BitmapsSync resize error", e);
             return null;
         }
     }

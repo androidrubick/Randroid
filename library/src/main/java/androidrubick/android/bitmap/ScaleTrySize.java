@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
  *
  * @since 1.0.0
  */
-public class ScaleTrySize extends BitmapTrySizeAdapter implements BitmapTrySize {
+public class ScaleTrySize extends TrySizeAdapter implements BitmapTrySize {
 
     private Bitmap mBm;
     /**

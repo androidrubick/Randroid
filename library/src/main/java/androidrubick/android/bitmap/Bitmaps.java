@@ -13,6 +13,7 @@ import androidrubick.android.async.ARSchedulers;
 import androidrubick.android.bitmap.loader.BitmapLoader;
 import androidrubick.android.device.DeviceInfos;
 import androidrubick.android.io.Files;
+import androidrubick.base.logging.ARLogger;
 
 /**
  * 工具类，用于{@link Bitmap}相关的操作
@@ -27,17 +28,25 @@ public class Bitmaps {
     /**
      * @since 1.0.0
      */
+    public static Bitmap loadIgnoreExc(BitmapLoader loader, BitmapFactory.Options options) {
+        try {
+            return loader.load(options);
+        } catch (Throwable e) {
+            ARLogger.warning("Bitmaps load error", e);
+            return null;
+        }
+    }
+
+    /**
+     * @since 1.0.0
+     */
     @NonNull
     public static BitmapFactory.Options decodeSize(BitmapLoader loader) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         options.outWidth = -1;
         options.outHeight = -1;
-        try {
-            loader.load(options);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        loadIgnoreExc(loader, options);
         return options;
     }
 
