@@ -8,6 +8,12 @@ import android.graphics.Bitmap;
  * 用于找到最合适（不会导致OOM）的尺寸的图片；
  *
  * <p>
+ *     尝试创建{@link Bitmap}，如果发生OOM，则以特定的{@code scale decrement}
+ * 逐步减小缩放比率；例如：缩放比率初始值为1，{@code scale decrement}为0.05，如果发生OOM，
+ * 则下一次尝试的缩放比率为0.95，以此类推。
+ * </p>
+ *
+ * <p>
  *     <i>operation is sync</i>
  * </p>
  *
@@ -32,7 +38,6 @@ public interface BitmapTrySize {
      * @param originH origin height
      * @param w       new width to try
      * @param h       new height to try
-     * @see Bitmaps#trySize
      * @since 1.0.0
      */
     Bitmap trySize(float scale, int originW, int originH, int w, int h);

@@ -18,6 +18,7 @@ public class ScaleTrySize extends BitmapTrySizeAdapter implements BitmapTrySize 
      * @since 1.0.0
      */
     public ScaleTrySize(@NonNull Bitmap bm) {
+        super(bm.getWidth(), bm.getHeight());
         mBm = bm;
     }
 

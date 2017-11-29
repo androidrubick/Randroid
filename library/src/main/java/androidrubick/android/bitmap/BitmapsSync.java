@@ -187,8 +187,8 @@ public class BitmapsSync {
         if (null == bm || width <= 0 || height <= 0) {
             return null;
         }
-        float w = bm.getWidth();
-        float h = bm.getHeight();
+        float w = Math.max(1, bm.getWidth());
+        float h = Math.max(1, bm.getHeight());
         float scaleX = width / w;
         float scaleY = height / h;
         try {

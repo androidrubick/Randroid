@@ -141,8 +141,7 @@ public class BitmapsAsync {
      * @return 如果创建成功，返回新的图片
      * @since 1.0.0
      */
-    public static void resize(final Bitmap bm, final int width, final int height,
-                              final OpPCallback<Bitmap> cb) {
+    public static void resize(final Bitmap bm, final int width, final int height, final OpPCallback<Bitmap> cb) {
         if (null == cb) return;
 
         new Async(cb) {
