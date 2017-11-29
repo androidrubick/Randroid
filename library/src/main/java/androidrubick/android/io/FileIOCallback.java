@@ -12,7 +12,7 @@ import java.io.File;
  *
  * @since 1.0
  */
-public interface FileProgressCallback {
+public interface FileIOCallback {
 
     /**
      * 操作进度的回调

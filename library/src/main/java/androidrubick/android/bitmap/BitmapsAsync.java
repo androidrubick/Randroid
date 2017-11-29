@@ -6,6 +6,8 @@ import android.support.annotation.FloatRange;
 import java.io.File;
 
 import androidrubick.android.async.AsyncOp;
+import androidrubick.android.async.OpCallback;
+import androidrubick.android.async.OpPCallback;
 import androidrubick.android.bitmap.loader.BitmapLoader;
 import androidrubick.android.bitmap.loader.BitmapLoaderFactory;
 
@@ -15,7 +17,7 @@ import androidrubick.android.bitmap.loader.BitmapLoaderFactory;
  * <p>
  * Created by Yin Yong on 2017/11/15.
  *
- * @since 2.3.0
+ * @since 1.0.0
  */
 public class BitmapsAsync {
 
@@ -35,6 +37,8 @@ public class BitmapsAsync {
      * 异步加载图片
      *
      * @param loader {@link Bitmap}加载器
+     *
+     * @since 1.0.0
      */
     public static void load(final BitmapLoader loader, final OpPCallback<Bitmap> cb) {
         load(loader, null, cb);
@@ -45,6 +49,8 @@ public class BitmapsAsync {
      *
      * @param loader {@link Bitmap}加载器
      * @param cb     回调，如果加载成功回调将会返回最终加载的图片
+     *
+     * @since 1.0.0
      */
     public static void load(final BitmapLoader loader, final DecodeParam param, final OpPCallback<Bitmap> cb) {
         if (null == cb) return;
@@ -62,6 +68,8 @@ public class BitmapsAsync {
      *
      * @param file 文件对象
      * @param cb   回调，如果加载成功回调将会返回最终加载的图片
+     *
+     * @since 1.0.0
      */
     public static void load(final File file, final OpPCallback<Bitmap> cb) {
         load(file, null, cb);
@@ -73,6 +81,8 @@ public class BitmapsAsync {
      * @param file  文件对象
      * @param param 加载参数
      * @param cb    回调，如果加载成功回调将会返回最终加载的图片
+     *
+     * @since 1.0.0
      */
     public static void load(final File file, final DecodeParam param, final OpPCallback<Bitmap> cb) {
         load(BitmapLoaderFactory.fromFile(file), param, cb);
@@ -85,6 +95,8 @@ public class BitmapsAsync {
      * @param param 保存时用的压缩参数，包含格式和质量
      * @param file  要保存到的文件对象
      * @param cb    回调
+     *
+     * @since 1.0.0
      */
     public static void save(final Bitmap bm, final CompressParam param, final File file,
                             final OpCallback cb) {
@@ -109,6 +121,8 @@ public class BitmapsAsync {
      * @param bm    源图片
      * @param scale 缩放比率
      * @param cb    回调，如果创建成功，返回新的图片
+     *
+     * @since 1.0.0
      */
     public static void scale(final Bitmap bm, @FloatRange(from = 0, to = 1, fromInclusive = false) final float scale,
                              final OpPCallback<Bitmap> cb) {

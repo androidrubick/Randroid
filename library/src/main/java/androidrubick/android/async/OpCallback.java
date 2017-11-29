@@ -1,7 +1,7 @@
-package androidrubick.android.bitmap;
+package androidrubick.android.async;
 
 /**
- * callback for bitmap operations
+ * callback for common operations
  *
  * <p>
  * Created by Yin Yong on 2017/11/15.

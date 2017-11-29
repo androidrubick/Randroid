@@ -1,5 +1,7 @@
 package androidrubick.android.bitmap;
 
+import android.support.annotation.FloatRange;
+
 import androidrubick.base.utils.MathCompat;
 
 /**
@@ -46,12 +48,21 @@ public class DecodeParam {
     public final int inPreferredHeight;
 
     /**
-     * 如果没有设置，值为-1；合理的值范围(0, 1)；
+     * 如果没有设置，值为-1；
+     *
+     * <p></p>
+     *
+     * @since 1.0.0
+     */
+    public final int inPreferredPixels;
+
+    /**
+     * 如果没有设置，值为-1；合理的值范围(0, +∞)；
      *
      * <p></p>
      *
      * 注：
-     * 创建时确保值为-1，或者范围在(0, 1)
+     * 创建时确保值为-1，或者范围在(0, +∞)
      *
      * @since 1.0.0
      */
@@ -70,6 +81,7 @@ public class DecodeParam {
     /*package*/ DecodeParam() {
         this.inPreferredWidth = -1;
         this.inPreferredHeight = -1;
+        this.inPreferredPixels = -1;
         this.inScale = -1;
     }
 
@@ -97,26 +109,42 @@ public class DecodeParam {
     /**
      * @since 1.0.0
      */
-    public static DecodeParam preferredScale(float scale) {
+    public static DecodeParam preferredScale(@FloatRange(from = 0, fromInclusive = false) float scale) {
         return new DecodeParam(scale);
+    }
+
+    /**
+     * @since 1.0.0
+     */
+    public static DecodeParam preferredPixels(int pixels) {
+        return new DecodeParam(pixels);
     }
 
     /*package*/ DecodeParam(int inPreferredWidth, int inPreferredHeight) {
         this.inPreferredWidth = inPreferredWidth > 0 ? inPreferredWidth : -1;
         this.inPreferredHeight = inPreferredHeight > 0 ? inPreferredHeight : -1;
+        this.inPreferredPixels = -1;
+        this.inScale = -1;
+    }
+
+    /*package*/ DecodeParam(int pixels) {
+        this.inPreferredWidth = -1;
+        this.inPreferredHeight = -1;
+        this.inPreferredPixels = pixels > 0 ? pixels : -1;
         this.inScale = -1;
     }
 
     /*package*/ DecodeParam(float scale) {
         this.inPreferredWidth = -1;
         this.inPreferredHeight = -1;
+        this.inPreferredPixels = -1;
         scale = MathCompat.limitByRange(scale, 0, 1);
         // 如果scale == 0，或者scale == 1 都不需要缩放
         this.inScale = scale == 0 || scale == 1 ? -1 : scale;
     }
 
     /*package*/ boolean hasValidPreference() {
-        return hasPreferredSize() || hasPreferredScale();
+        return hasPreferredSize() || hasPreferredScale() || hasPreferredPixels();
     }
 
     /*package*/ boolean hasPreferredSize() {
@@ -125,5 +153,9 @@ public class DecodeParam {
 
     /*package*/ boolean hasPreferredScale() {
         return inScale != -1;
+    }
+
+    /*package*/ boolean hasPreferredPixels() {
+        return inPreferredPixels > 0;
     }
 }

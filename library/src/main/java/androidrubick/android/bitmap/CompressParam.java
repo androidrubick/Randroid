@@ -20,7 +20,7 @@ public class CompressParam {
     /**
      * @since 1.0.0
      */
-    @IntRange(from = 0, to = 100)
+    @IntRange(from = 1, to = 100)
     public final int quality;
 
     /**
@@ -34,7 +34,7 @@ public class CompressParam {
      * @since 1.0.0
      */
     public CompressParam(@NonNull Bitmap.CompressFormat format,
-                         @IntRange(from = 0, to = 100) int quality) {
+                         @IntRange(from = 1, to = 100) int quality) {
         this.format = format;
         this.quality = quality;
     }
@@ -49,7 +49,7 @@ public class CompressParam {
     /**
      * @since 1.0.0
      */
-    public static CompressParam jpeg(@IntRange(from = 0, to = 100) int quality) {
+    public static CompressParam jpeg(@IntRange(from = 1, to = 100) int quality) {
         return new CompressParam(Bitmap.CompressFormat.JPEG, quality);
     }
 
@@ -63,7 +63,7 @@ public class CompressParam {
     /**
      * @since 1.0.0
      */
-    public static CompressParam png(@IntRange(from = 0, to = 100) int quality) {
+    public static CompressParam png(@IntRange(from = 1, to = 100) int quality) {
         return new CompressParam(Bitmap.CompressFormat.PNG, quality);
     }
 }

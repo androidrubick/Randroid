@@ -1,9 +1,7 @@
-package androidrubick.android.bitmap;
+package androidrubick.android.async;
 
 /**
- * callback for bitmap operations, with {@link android.graphics.Bitmap result bitmap}
- *
- * as the 2nd parameter
+ * callback for common operations, with a parameter
  *
  * <p>
  * <p>
@@ -14,7 +12,7 @@ package androidrubick.android.bitmap;
 public interface OpPCallback<Result> {
     /**
      * @param success result of target operation, whether success
-     * @param result result bitmap
+     * @param result result
      * @since 1.0.0
      */
     void opResult(boolean success, Result result);

@@ -1,12 +1,9 @@
 package androidrubick.android.io;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.Flushable;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 
 import static androidrubick.base.utils.Objects.getAs;
 
@@ -19,42 +16,6 @@ import static androidrubick.base.utils.Objects.getAs;
  *
  */
 public class IOUtils {
-    private IOUtils() { }
-
-    /**
-     * @since 1.0
-     */
-    public static IOOp from(File file) {
-        return new IOOp(file);
-    }
-
-    /**
-     * @since 1.0
-     */
-    public static IOOp fromContent(String content) {
-        return new IOOp(content);
-    }
-
-    /**
-     * @since 1.0
-     */
-    public static IOOp from(byte[] data) {
-        return new IOOp(data);
-    }
-
-    /**
-     * @since 1.0
-     */
-    public static IOOp from(InputStream ins) {
-        return new IOOp(ins);
-    }
-
-    /**
-     * @since 1.0
-     */
-    public static IOOp from(Reader reader) {
-        return new IOOp(reader);
-    }
 
     // >>>>>>>>>>>>>>>>>>>>>>
     // TODO close

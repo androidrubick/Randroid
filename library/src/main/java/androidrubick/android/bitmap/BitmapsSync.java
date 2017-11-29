@@ -24,71 +24,6 @@ import androidrubick.android.io.IOUtils;
 public class BitmapsSync {
 
     /**
-     * 同步加载图片
-     *
-     * @param loader {@link Bitmap}加载器
-     * @return 如果加载成功回调将会返回最终加载的图片
-     *
-     * @since 1.0.0
-     */
-    public static Bitmap load(BitmapLoader loader) {
-        return load(loader, null);
-    }
-
-    /**
-     * 同步加载图片
-     *
-     * @param loader {@link Bitmap}加载器
-     * @return 如果加载成功回调将会返回最终加载的图片
-     *
-     * @since 1.0.0
-     */
-    public static Bitmap load(BitmapLoader loader, DecodeParam param) {
-        if (null == loader) {
-            return null;
-        }
-
-        // use dummy
-        if (null == param)  param = DecodeParam.none();
-
-        if (!param.hasValidPreference()) return loader.load(null);
-
-        float scale = Bitmaps.calScale(loader, param);
-        if (param.outWidth <= 0 || param.outHeight <= 0) return null;
-
-        int sampleSize = Math.round(1f / scale);
-
-        BitmapFactory.Options sampleOps = new BitmapFactory.Options();
-        sampleOps.inSampleSize = sampleSize;
-        Bitmap bm = loader.load(sampleOps);
-
-        if (null != bm) {
-            // 因为sample size得到的未必是目标大小
-            // check size
-            final int w = bm.getWidth();
-            final int h = bm.getHeight();
-
-            final int targetW = (int) (param.outWidth * scale);
-            final int targetH = (int) (param.outHeight * scale);
-
-            // 五分之一的出入
-            final float minDeltaScale = 0.2f;
-            final int minDelta = Math.min((int) (param.outWidth * minDeltaScale),
-                    (int) (param.outHeight * minDeltaScale));
-            if (w - targetW > minDelta || h - targetH > minDelta) {
-                // 如果获得的图片大小比实际需要的大，需要进行resize
-                float reScale = (float) targetW / (float) w;
-                Bitmap reScaleBm = scale(bm, reScale);
-                if (null != reScaleBm) {
-                    bm.recycle();
-                    bm = reScaleBm;
-                }
-            }
-        }
-        return bm;
-    }
-
-    /**
      * 同步加载图片文件
      *
      * @param file 要加载的文件对象
@@ -112,6 +47,75 @@ public class BitmapsSync {
     @Nullable
     public static Bitmap load(File file, DecodeParam param) {
         return load(BitmapLoaderFactory.fromFile(file), param);
+    }
+
+    /**
+     * 同步加载图片
+     *
+     * @param loader {@link Bitmap}加载器
+     * @return 如果加载成功回调将会返回最终加载的图片
+     *
+     * @since 1.0.0
+     */
+    public static Bitmap load(BitmapLoader loader) {
+        return load(loader, null);
+    }
+
+    /**
+     * 同步加载图片
+     *
+     * @param loader {@link Bitmap}加载器
+     * @return 如果加载成功回调将会返回最终加载的图片
+     *
+     * @since 1.0.0
+     */
+    public static Bitmap load(BitmapLoader loader, DecodeParam param) {
+        if (null == loader) return null;
+
+        // use dummy
+        if (null == param || !param.hasValidPreference()) return loader.load(null);
+
+        float scale = Bitmaps.calScale(loader, param);
+        if (param.outWidth <= 0 || param.outHeight <= 0) return null;
+
+        int sampleSize = Math.max(1, Math.round(1f / scale));
+
+        BitmapFactory.Options sampleOps = new BitmapFactory.Options();
+        sampleOps.inSampleSize = sampleSize;
+        Bitmap bm = loader.load(sampleOps);
+
+        if (null == bm) {
+            return null;
+        }
+
+        // 因为sample size得到的未必是目标大小
+        // check size
+        final int w = bm.getWidth();
+        final int h = bm.getHeight();
+
+        final int targetW = (int) (param.outWidth * scale);
+        final int targetH = (int) (param.outHeight * scale);
+
+        // 五分之一的出入
+        final float minDeltaScale = 0.2f;
+        final int minDelta = Math.min((int) (param.outWidth * minDeltaScale),
+                (int) (param.outHeight * minDeltaScale));
+
+        Bitmap reScaleBm = null;
+        if (w - targetW > minDelta || h - targetH > minDelta) {
+            // 如果获得的图片大小比实际需要的大，需要进行resize
+            float reScale = (float) targetW / (float) w;
+            reScaleBm = scale(bm, reScale);
+        } else if (targetW - w > minDelta || targetH - h > minDelta) {
+            // 如果获得的图片大小比实际需要的小，需要进行resize
+            float reScale = (float) targetW / (float) w;
+            reScaleBm = scale(bm, reScale);
+        }
+        if (null != reScaleBm) {
+            bm.recycle();
+            bm = reScaleBm;
+        }
+        return bm;
     }
 
     /**
@@ -147,13 +151,13 @@ public class BitmapsSync {
      * 同步保存图片文件
      *
      * @param bm    源图片
-     * @param scale 缩放比率
+     * @param scale 缩放比率，(0, +∞)
      * @return 如果创建成功，返回新的图片
      *
      * @since 1.0.0
      */
     @Nullable
-    public static Bitmap scale(Bitmap bm, @FloatRange(from = 0, to = 1, fromInclusive = false) float scale) {
+    public static Bitmap scale(Bitmap bm, @FloatRange(from = 0, fromInclusive = false) float scale) {
         if (null == bm) {
             return null;
         }
