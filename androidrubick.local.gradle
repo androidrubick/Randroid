@@ -17,10 +17,13 @@ allprojects {
         }
     }
 
+    project.ext.propertyValueTrue = { String val ->
+        return val == '1' || 'true'.equalsIgnoreCase(val)
+    }
+
     project.ext.propertyTrue = { String name ->
         if (project.hasProperty(name)) {
-            def val = String.valueOf(project.property(name))
-            return val == '1' || 'true'.equalsIgnoreCase(val)
+            return propertyValueTrue(String.valueOf(project.property(name)))
         }
         return false
     }
