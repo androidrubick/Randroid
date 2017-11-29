@@ -17,7 +17,7 @@ import java.util.List;
 
 import androidrubick.base.collection.CollectionsCompat;
 import androidrubick.base.logging.ARLogger;
-import androidrubick.base.utils.MathCompat;
+import androidrubick.base.math.MathCompat;
 import androidrubick.base.utils.Objects;
 
 /**

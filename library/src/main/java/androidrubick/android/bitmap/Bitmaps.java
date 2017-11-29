@@ -13,7 +13,6 @@ import androidrubick.android.async.ARSchedulers;
 import androidrubick.android.bitmap.loader.BitmapLoader;
 import androidrubick.android.device.DeviceInfos;
 import androidrubick.android.io.Files;
-import androidrubick.base.math.MathCompat;
 
 /**
  * 工具类，用于{@link Bitmap}相关的操作
@@ -141,7 +140,7 @@ public class Bitmaps {
             if (param.inPreferredHeight > 0) {
                 scaleH = (float) param.inPreferredHeight / (float) sizeOps.outHeight;
             }
-            scale = MathCompat.limitByRange(Math.min(scaleW, scaleH), 0, 1);
+            scale = Math.min(scaleW, scaleH);
         } else if (param.hasPreferredScale()) {
             scale = param.inScale;
         } else if (param.hasPreferredPixels()) {

@@ -3,9 +3,16 @@ package androidrubick.android.bitmap;
 import android.graphics.Bitmap;
 
 /**
- * 尝试创建{@link Bitmap}，方式发生OOM的回调类，用于{@link Bitmaps#trySize}系列方法
+ * 尝试创建{@link Bitmap}，方式发生OOM的回调类；
+ *
+ * 用于找到最合适（不会导致OOM）的尺寸的图片；
+ *
  * <p>
+ *     <i>operation is sync</i>
+ * </p>
+ *
  * <p>
+ * </p>
  * Created by Yin Yong on 2017/11/15.
  *
  * @since 1.0.0

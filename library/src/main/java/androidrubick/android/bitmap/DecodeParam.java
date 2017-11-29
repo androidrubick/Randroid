@@ -2,7 +2,7 @@ package androidrubick.android.bitmap;
 
 import android.support.annotation.FloatRange;
 
-import androidrubick.base.utils.MathCompat;
+import androidrubick.base.math.MathCompat;
 
 /**
  * 加载{@link android.graphics.Bitmap}会用到的参数
@@ -107,6 +107,7 @@ public class DecodeParam {
     }
 
     /**
+     * @param scale (0, +∞)
      * @since 1.0.0
      */
     public static DecodeParam preferredScale(@FloatRange(from = 0, fromInclusive = false) float scale) {

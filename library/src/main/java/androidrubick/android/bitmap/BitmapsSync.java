@@ -28,7 +28,6 @@ public class BitmapsSync {
      *
      * @param file 要加载的文件对象
      * @return 如果加载成功回调将会返回最终加载的图片
-     *
      * @since 1.0.0
      */
     public static Bitmap load(File file) {
@@ -41,7 +40,6 @@ public class BitmapsSync {
      * @param file  文件对象
      * @param param 加载参数
      * @return 如果加载成功回调将会返回最终加载的图片
-     *
      * @since 1.0.0
      */
     @Nullable
@@ -54,7 +52,6 @@ public class BitmapsSync {
      *
      * @param loader {@link Bitmap}加载器
      * @return 如果加载成功回调将会返回最终加载的图片
-     *
      * @since 1.0.0
      */
     public static Bitmap load(BitmapLoader loader) {
@@ -66,7 +63,6 @@ public class BitmapsSync {
      *
      * @param loader {@link Bitmap}加载器
      * @return 如果加载成功回调将会返回最终加载的图片
-     *
      * @since 1.0.0
      */
     public static Bitmap load(BitmapLoader loader, DecodeParam param) {
@@ -125,7 +121,6 @@ public class BitmapsSync {
      * @param param 保存时用的压缩参数，包含格式和质量
      * @param file  要保存到的文件对象
      * @return 是否保存成功
-     *
      * @since 1.0.0
      */
     public static boolean save(Bitmap bm, CompressParam param, File file) {
@@ -148,17 +143,16 @@ public class BitmapsSync {
     }
 
     /**
-     * 同步保存图片文件
+     * 单次缩放图片，如果成功，返回缩放后的图片；如果失败，返回null
      *
      * @param bm    源图片
      * @param scale 缩放比率，(0, +∞)
      * @return 如果创建成功，返回新的图片
-     *
      * @since 1.0.0
      */
     @Nullable
     public static Bitmap scale(Bitmap bm, @FloatRange(from = 0, fromInclusive = false) float scale) {
-        if (null == bm) {
+        if (null == bm || scale <= 0f) {
             return null;
         }
         int w = (int) (bm.getWidth() * scale);
@@ -171,6 +165,40 @@ public class BitmapsSync {
             Bitmap result = Bitmap.createBitmap(w, h, config);
             Canvas canvas = new Canvas(result);
             canvas.scale(scale, scale);
+            canvas.drawBitmap(bm, 0, 0, null);
+            return result;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 单次调整图片大小，如果成功，返回调整大小后的图片；如果失败，返回null
+     *
+     * @param bm     源图片
+     * @param width  调整后的宽度
+     * @param height 调整后的高度
+     * @return 如果创建成功，返回新的图片
+     * @since 1.0.0
+     */
+    @Nullable
+    public static Bitmap resize(Bitmap bm, int width, int height) {
+        if (null == bm || width <= 0 || height <= 0) {
+            return null;
+        }
+        float w = bm.getWidth();
+        float h = bm.getHeight();
+        float scaleX = width / w;
+        float scaleY = height / h;
+        try {
+            Bitmap.Config config = bm.getConfig();
+            if (null == config) {
+                config = Bitmap.Config.RGB_565;
+            }
+            Bitmap result = Bitmap.createBitmap(width, height, config);
+            Canvas canvas = new Canvas(result);
+            canvas.scale(scaleX, scaleY);
             canvas.drawBitmap(bm, 0, 0, null);
             return result;
         } catch (Throwable e) {
