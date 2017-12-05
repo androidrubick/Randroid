@@ -17,6 +17,10 @@ public interface BitmapLoader {
 
     /**
      * load {@link Bitmap}
+     *
+     * @param options null-ok
+     * @return if {@link android.graphics.BitmapFactory.Options#inJustDecodeBounds} is set true,
+     * return null; or load failed, return null
      * @since 1.0.0
      */
     Bitmap load(@Nullable BitmapFactory.Options options) ;

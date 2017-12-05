@@ -33,7 +33,7 @@ public interface BitmapTrySize {
      *
      * 当OOM时，将进行下一轮尝试
      *
-     * @param scale   scale factor, [0, 1]
+     * @param scale   scale factor, (0, +)
      * @param originW origin width
      * @param originH origin height
      * @param w       new width to try
@@ -44,7 +44,7 @@ public interface BitmapTrySize {
 
     /**
      * @param bm result {@link Bitmap}
-     * @param scale result scale factor, [0, 1]
+     * @param scale result scale factor, (0, +)
      * @param w result w
      * @param h result h
      * @since 1.0.0

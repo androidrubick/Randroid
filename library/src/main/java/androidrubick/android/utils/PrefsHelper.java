@@ -41,6 +41,7 @@ public class PrefsHelper {
     // visit mMemoryCache preferentially
     private final Bundle mMemoryCache = new Bundle();
 
+    private final Context mContext;
     private final int mMode;
     private final String mFile;
     /**
@@ -55,6 +56,24 @@ public class PrefsHelper {
      * @param mode Desired preferences mode
      */
     public PrefsHelper(String file, int mode) {
+        mContext = ARContext.app();
+        mFile = file;
+        mMode = mode;
+    }
+
+    /**
+     * @param file Desired preferences file
+     */
+    public PrefsHelper(Context context, String file) {
+        this(context, file, Context.MODE_PRIVATE);
+    }
+
+    /**
+     * @param file Desired preferences file
+     * @param mode Desired preferences mode
+     */
+    public PrefsHelper(Context context, String file, int mode) {
+        mContext = context.getApplicationContext();
         mFile = file;
         mMode = mode;
     }
@@ -138,7 +157,7 @@ public class PrefsHelper {
         if (mSharedPreferences == null) {
             synchronized (mMemoryCache) {
                 if (mSharedPreferences == null) {
-                    mSharedPreferences = ARContext.app().getSharedPreferences(mFile, mMode);
+                    mSharedPreferences = mContext.getSharedPreferences(mFile, mMode);
                     // load from raw SharedPreferences
                     onInit(mMemoryCache, mSharedPreferences);
                 }

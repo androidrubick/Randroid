@@ -317,6 +317,7 @@ public class AppInfos {
     }
 
     private static boolean isTopAppAfterAPI21() {
+        // FIXME: 2017/12/5 增加一些判断
 //        return XActivityController.isForeground() || isTopAppBeforeAPI21();
         return isTopAppBeforeAPI21();
     }

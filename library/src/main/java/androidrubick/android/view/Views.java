@@ -10,7 +10,7 @@ import android.widget.AdapterView;
  *
  * @since 1.0.0
  */
-public class ViewUtil {
+public class Views {
 
     /**
      * @since 1.0.0
