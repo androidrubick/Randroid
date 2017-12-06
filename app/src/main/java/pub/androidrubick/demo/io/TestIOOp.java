@@ -23,7 +23,7 @@ public class TestIOOp {
         ARLogger.debug("test1 = " + IOOp.from("test".getBytes()).asString());
         ARLogger.debug("test1 = " + IOOp.from(new File(ARContext.app().getCacheDir(), "yytest")).asString());
 
-        IOOp.fromContent("yytest" + SystemClock.elapsedRealtime()).subThread()
+        IOOp.fromContent("yytest" + SystemClock.elapsedRealtime()).async()
                 .callback(new IOCallback() {
                     @Override
                     public void onProgress(long readThisTime, long readTotal, @NonNull BufferType bt) {
