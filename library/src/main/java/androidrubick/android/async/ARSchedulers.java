@@ -14,14 +14,23 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class ARSchedulers {
 
+    /**
+     * @since 1.0.0
+     */
     public static void io(@NonNull Runnable run) {
         Schedulers.io().scheduleDirect(run);
     }
 
+    /**
+     * @since 1.0.0
+     */
     public static void newThread(@NonNull Runnable run) {
         Schedulers.newThread().scheduleDirect(run);
     }
 
+    /**
+     * @since 1.0.0
+     */
     public static void mainThread(@NonNull Runnable run) {
         AndroidSchedulers.mainThread().scheduleDirect(run);
     }

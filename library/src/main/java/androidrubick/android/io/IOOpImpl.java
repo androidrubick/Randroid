@@ -15,7 +15,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import androidrubick.android.async.ARSchedulers;
-import androidrubick.android.async.AsyncHelper;
+import androidrubick.android.async.AsyncProxy;
 
 import static androidrubick.android.io.IOOp.B_STREAM;
 import static androidrubick.android.io.IOOp.C_STREAM;
@@ -28,14 +28,14 @@ import static androidrubick.android.io.IOOp.FILE;
  * @since 1.0.0
  */
 /*package*/ class IOOpImpl {
-    final boolean async;
-    boolean closeIn;
-    boolean closeOut;
+    private final boolean async;
+    private boolean closeIn;
+    private boolean closeOut;
     @IntRange(from = 1)
-    final int bufferSize;
-    final String charset;
+    private final int bufferSize;
+    private final String charset;
     @Nullable
-    IOCallback cb;
+    private IOCallback cb;
 
     IOOpImpl(boolean async,
              boolean closeIn, boolean closeOut,
@@ -50,8 +50,8 @@ import static androidrubick.android.io.IOOp.FILE;
         this.cb = cb;
     }
 
-    public void doOp(int fromType, Object fromObj, int toType, Object toObj) {
-        cb = async && null != cb ? (IOCallback) AsyncHelper.async(cb) : cb;
+    void doOp(int fromType, Object fromObj, int toType, Object toObj) {
+        cb = async && null != cb ? (IOCallback) AsyncProxy.async(cb) : cb;
 
         Throwable err = null;
         if (fromType == FILE) {
@@ -77,7 +77,7 @@ import static androidrubick.android.io.IOOp.FILE;
 
         // 如果有异常，直接回调并释放资源，并设置为不可再次调用
         if (null != err) {
-            release(fromType, fromObj, closeIn, toType, toObj, closeOut);
+            release(fromType, fromObj, toType, toObj);
             performError(err, 0, BufferType.Byte);
             return;
         }
@@ -96,19 +96,17 @@ import static androidrubick.android.io.IOOp.FILE;
             });
         } else {
             trans(fromType, from, toType, to);
-            release(fromType, fromObj, closeIn, toType, toObj, closeOut);
         }
     }
 
-    private void release(int fromType, Object fromObj, boolean closeIn,
-                         int toType, Object toObj, boolean closeOut) {
+    private void release(int fromType, Object fromObj, int toType, Object toObj) {
         if (toType == B_STREAM || toType == C_STREAM) {
-            if (closeOut) {
+            if (closeOut && toObj instanceof Closeable) {
                 IOUtils.close((Closeable) toObj);
             }
         }
         if (fromType == B_STREAM || fromType == C_STREAM) {
-            if (closeIn) {
+            if (closeIn && toObj instanceof Closeable) {
                 IOUtils.close((Closeable) fromObj);
             }
         }
@@ -133,6 +131,7 @@ import static androidrubick.android.io.IOOp.FILE;
                     throw new IllegalArgumentException("invalid fromType or toType");
             }
         } catch (Throwable e) {
+            release(fromType, fromObj, toType, toObj);
             performError(e, 0, BufferType.Byte);
         }
     }
@@ -147,9 +146,9 @@ import static androidrubick.android.io.IOOp.FILE;
                 readTotal += len;
                 performProgress(len, readTotal, BufferType.Char);
             }
-            performComplete(readTotal, BufferType.Char);
         } catch (Throwable e) {
             performError(e, readTotal, BufferType.Char);
+            return;
         } finally {
             if (closeOut) {
                 IOUtils.close(writer);
@@ -158,13 +157,16 @@ import static androidrubick.android.io.IOOp.FILE;
                 IOUtils.close(reader);
             }
         }
+        performComplete(readTotal, BufferType.Char);
     }
 
     private void i2w(InputStream inputStream, Writer writer) {
+        InputStreamReader reader;
         try {
-            r2w(new InputStreamReader(inputStream, charset), writer);
+            reader = new InputStreamReader(inputStream, charset);
         } catch (Throwable e) {
             performError(e, 0, BufferType.Char);
+            return;
         } finally {
             if (closeOut) {
                 IOUtils.close(writer);
@@ -173,13 +175,16 @@ import static androidrubick.android.io.IOOp.FILE;
                 IOUtils.close(inputStream);
             }
         }
+        r2w(reader, writer);
     }
 
     private void r2o(Reader reader, OutputStream outputStream) {
+        OutputStreamWriter writer;
         try {
-            r2w(reader, new OutputStreamWriter(outputStream, charset));
+            writer = new OutputStreamWriter(outputStream, charset);
         } catch (Throwable e) {
             performError(e, 0, BufferType.Char);
+            return;
         } finally {
             if (closeOut) {
                 IOUtils.close(outputStream);
@@ -188,6 +193,7 @@ import static androidrubick.android.io.IOOp.FILE;
                 IOUtils.close(reader);
             }
         }
+        r2w(reader, writer);
     }
 
     private void i2o(InputStream inputStream, OutputStream outputStream) {
@@ -200,9 +206,9 @@ import static androidrubick.android.io.IOOp.FILE;
                 readTotal += len;
                 performProgress(len, readTotal, BufferType.Byte);
             }
-            performComplete(readTotal, BufferType.Byte);
         } catch (Throwable e) {
             performError(e, readTotal, BufferType.Byte);
+            return;
         } finally {
             if (closeOut) {
                 IOUtils.close(outputStream);
@@ -211,6 +217,7 @@ import static androidrubick.android.io.IOOp.FILE;
                 IOUtils.close(inputStream);
             }
         }
+        performComplete(readTotal, BufferType.Byte);
     }
 
     private void performProgress(long readThisTime, long readTotal, BufferType type) {
