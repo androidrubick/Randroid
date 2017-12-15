@@ -30,19 +30,19 @@ public class AndroidUtils {
 	private AndroidUtils() { }
 	
     public static int px2dp(int px) {
-        return (int) (px / DeviceInfos.getDensity() + 0.5f);
+        return (int) (px / DeviceInfos.density() + 0.5f);
     }
 
     public static int dp2px(float dp) {
-        return (int) (dp * DeviceInfos.getDensity() + 0.5f);
+        return (int) (dp * DeviceInfos.density() + 0.5f);
     }
 
 	public static int px2sp(float px) {
-		return (int) (px / DeviceInfos.getScaledDensity() + 0.5f);
+		return (int) (px / DeviceInfos.scaledDensity() + 0.5f);
 	}
 
     public static int sp2px(float sp) {
-        return (int) (sp * DeviceInfos.getScaledDensity() + 0.5f);
+        return (int) (sp * DeviceInfos.scaledDensity() + 0.5f);
     }
 
 

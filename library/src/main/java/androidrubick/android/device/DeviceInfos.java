@@ -53,7 +53,7 @@ public class DeviceInfos {
      * 获取屏幕宽度(单位：px)
      * @since 1.0
      */
-    public static int getScreenWidth() {
+    public static int screenWidth() {
         getDisplay();
         return sDisplayWidth;
     }
@@ -62,7 +62,7 @@ public class DeviceInfos {
      * 获取屏幕高度(单位：px)
      * @since 1.0
      */
-    public static int getScreenHeight() {
+    public static int screenHeight() {
         getDisplay();
         return sDisplayHeight;
     }
@@ -71,7 +71,7 @@ public class DeviceInfos {
      * 获取屏幕密度
      * @since 1.0
      */
-    public static float getDensity() {
+    public static float density() {
         getDisplay();
         return sDensity;
     }
@@ -80,7 +80,7 @@ public class DeviceInfos {
      * 用于字体大小的密度
      * @since 1.0
      */
-    public static float getScaledDensity() {
+    public static float scaledDensity() {
         getDisplay();
         return sScaledDensity;
     }
@@ -89,18 +89,18 @@ public class DeviceInfos {
      * 获取客户端的分辨率（例如480x800）
      * @since 1.0
      */
-    public static String getDeviceResolution() {
-        return getDeviceResolution("x");
+    public static String deviceResolution() {
+        return deviceResolution("x");
     }
 
     /**
      * 获取客户端的分辨率
-     * @param linkMark 连接符，{@link #getDeviceResolution()} 使用的是“x”
+     * @param linkMark 连接符，{@link #deviceResolution()} 使用的是“x”
      * @since 1.0
      */
-    public static String getDeviceResolution(String linkMark) {
-        int width = getScreenWidth();
-        int height = getScreenHeight();
+    public static String deviceResolution(String linkMark) {
+        int width = screenWidth();
+        int height = screenHeight();
         return width + linkMark + height;
     }
 

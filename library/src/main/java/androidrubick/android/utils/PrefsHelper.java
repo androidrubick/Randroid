@@ -62,15 +62,17 @@ public class PrefsHelper {
     }
 
     /**
-     * @param file Desired preferences file
+     * @param context context to get {@link SharedPreferences}
+     * @param file    Desired preferences file
      */
     public PrefsHelper(Context context, String file) {
         this(context, file, Context.MODE_PRIVATE);
     }
 
     /**
-     * @param file Desired preferences file
-     * @param mode Desired preferences mode
+     * @param context context to get {@link SharedPreferences}
+     * @param file    Desired preferences file
+     * @param mode    Desired preferences mode
      */
     public PrefsHelper(Context context, String file, int mode) {
         mContext = context.getApplicationContext();

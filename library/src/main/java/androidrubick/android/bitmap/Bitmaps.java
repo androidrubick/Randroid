@@ -95,21 +95,21 @@ public class Bitmaps {
      * @since 1.0.0
      */
     public static int sizeByScaleOfScreenWidth(float ratio) {
-        return (int) (DeviceInfos.getScreenWidth() * ratio);
+        return (int) (DeviceInfos.screenWidth() * ratio);
     }
 
     /**
      * @since 1.0.0
      */
     public static int sizeByScaleOfScreenHeight(float ratio) {
-        return (int) (DeviceInfos.getScreenHeight() * ratio);
+        return (int) (DeviceInfos.screenHeight() * ratio);
     }
 
     /**
      * @since 1.0.0
      */
     public static int pixelsByScaleOfScreen(float ratio) {
-        int s = DeviceInfos.getScreenWidth() * DeviceInfos.getScreenHeight();
+        int s = DeviceInfos.screenWidth() * DeviceInfos.screenHeight();
         return (int) (s * ratio);
     }
 

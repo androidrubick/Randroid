@@ -24,9 +24,9 @@ import static androidrubick.base.utils.Preconditions.checkNotNull;
  *
  * @since 1.0.0
  */
-public class ViewHolderUtil {
+public class ViewHolders {
 
-    private ViewHolderUtil() { /* no instance needed */ }
+    private ViewHolders() { /* no instance needed */ }
 
     /**
      * NOTE: <b>该方法将会覆盖convert view的tag</b>

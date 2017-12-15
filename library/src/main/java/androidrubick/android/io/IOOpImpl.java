@@ -17,9 +17,9 @@ import java.io.Writer;
 import androidrubick.android.async.ARSchedulers;
 import androidrubick.android.async.AsyncProxy;
 
-import static androidrubick.android.io.IOOp.B_STREAM;
-import static androidrubick.android.io.IOOp.C_STREAM;
-import static androidrubick.android.io.IOOp.FILE;
+import static androidrubick.android.io.IOOpBase.B_STREAM;
+import static androidrubick.android.io.IOOpBase.C_STREAM;
+import static androidrubick.android.io.IOOpBase.FILE;
 
 /**
  * <p></p>
@@ -28,7 +28,6 @@ import static androidrubick.android.io.IOOp.FILE;
  * @since 1.0.0
  */
 /*package*/ class IOOpImpl {
-    private final boolean async;
     private boolean closeIn;
     private boolean closeOut;
     @IntRange(from = 1)
@@ -37,12 +36,10 @@ import static androidrubick.android.io.IOOp.FILE;
     @Nullable
     private IOCallback cb;
 
-    IOOpImpl(boolean async,
-             boolean closeIn, boolean closeOut,
+    IOOpImpl(boolean closeIn, boolean closeOut,
              @IntRange(from = 1) int bufferSize,
              String charset,
              @Nullable IOCallback cb) {
-        this.async = async;
         this.closeIn = closeIn;
         this.closeOut = closeOut;
         this.bufferSize = bufferSize;
@@ -50,9 +47,7 @@ import static androidrubick.android.io.IOOp.FILE;
         this.cb = cb;
     }
 
-    void doOp(int fromType, Object fromObj, int toType, Object toObj) {
-        cb = async && null != cb ? (IOCallback) AsyncProxy.async(cb) : cb;
-
+    boolean sync(int fromType, Object fromObj, int toType, Object toObj) {
         Throwable err = null;
         if (fromType == FILE) {
             try {
@@ -79,24 +74,22 @@ import static androidrubick.android.io.IOOp.FILE;
         if (null != err) {
             release(fromType, fromObj, toType, toObj);
             performError(err, 0, BufferType.Byte);
-            return;
+            return false;
         }
 
-        // 如果没有异常，则进行传输
-        final int ft = fromType;
-        final int tt = toType;
-        final Object from = fromObj;
-        final Object to = toObj;
-        if (async) {
-            ARSchedulers.io(new Runnable() {
-                @Override
-                public void run() {
-                    trans(ft, from, tt, to);
-                }
-            });
-        } else {
-            trans(fromType, from, toType, to);
+        return trans(fromType, fromObj, toType, toObj);
+    }
+
+    void async(final int fromType, final Object fromObj, final int toType, final Object toObj) {
+        if (!AsyncProxy.isAsyncProxy(this.cb)) {
+            this.cb = null != cb ? (IOCallback) AsyncProxy.async(cb) : cb;
         }
+        ARSchedulers.io(new Runnable() {
+            @Override
+            public void run() {
+                sync(fromType, fromObj, toType, toObj);
+            }
+        });
     }
 
     private void release(int fromType, Object fromObj, int toType, Object toObj) {
@@ -106,37 +99,34 @@ import static androidrubick.android.io.IOOp.FILE;
             }
         }
         if (fromType == B_STREAM || fromType == C_STREAM) {
-            if (closeIn && toObj instanceof Closeable) {
+            if (closeIn && fromObj instanceof Closeable) {
                 IOUtils.close((Closeable) fromObj);
             }
         }
     }
 
-    private void trans(int fromType, Object fromObj, int toType, Object toObj) {
+    private boolean trans(int fromType, Object fromObj, int toType, Object toObj) {
         try {
             switch ((fromType * 10) + toType) {
                 case B_STREAM * 10 + B_STREAM:
-                    i2o((InputStream) fromObj, (OutputStream) toObj);
-                    break;
+                    return i2o((InputStream) fromObj, (OutputStream) toObj);
                 case B_STREAM * 10 + C_STREAM:
-                    i2w((InputStream) fromObj, (Writer) toObj);
-                    break;
+                    return i2w((InputStream) fromObj, (Writer) toObj);
                 case C_STREAM * 10 + B_STREAM:
-                    r2o((Reader) fromObj, (OutputStream) toObj);
-                    break;
+                    return r2o((Reader) fromObj, (OutputStream) toObj);
                 case C_STREAM * 10 + C_STREAM:
-                    r2w((Reader) fromObj, (Writer) toObj);
-                    break;
+                    return r2w((Reader) fromObj, (Writer) toObj);
                 default:
                     throw new IllegalArgumentException("invalid fromType or toType");
             }
         } catch (Throwable e) {
             release(fromType, fromObj, toType, toObj);
             performError(e, 0, BufferType.Byte);
+            return false;
         }
     }
 
-    private void r2w(Reader reader, Writer writer) {
+    private boolean r2w(Reader reader, Writer writer) {
         long readTotal = 0;
         try {
             char[] buf = new char[bufferSize];
@@ -148,7 +138,7 @@ import static androidrubick.android.io.IOOp.FILE;
             }
         } catch (Throwable e) {
             performError(e, readTotal, BufferType.Char);
-            return;
+            return false;
         } finally {
             if (closeOut) {
                 IOUtils.close(writer);
@@ -158,15 +148,16 @@ import static androidrubick.android.io.IOOp.FILE;
             }
         }
         performComplete(readTotal, BufferType.Char);
+        return true;
     }
 
-    private void i2w(InputStream inputStream, Writer writer) {
+    private boolean i2w(InputStream inputStream, Writer writer) {
         InputStreamReader reader;
         try {
             reader = new InputStreamReader(inputStream, charset);
         } catch (Throwable e) {
             performError(e, 0, BufferType.Char);
-            return;
+            return false;
         } finally {
             if (closeOut) {
                 IOUtils.close(writer);
@@ -175,16 +166,16 @@ import static androidrubick.android.io.IOOp.FILE;
                 IOUtils.close(inputStream);
             }
         }
-        r2w(reader, writer);
+        return r2w(reader, writer);
     }
 
-    private void r2o(Reader reader, OutputStream outputStream) {
+    private boolean r2o(Reader reader, OutputStream outputStream) {
         OutputStreamWriter writer;
         try {
             writer = new OutputStreamWriter(outputStream, charset);
         } catch (Throwable e) {
             performError(e, 0, BufferType.Char);
-            return;
+            return false;
         } finally {
             if (closeOut) {
                 IOUtils.close(outputStream);
@@ -193,10 +184,10 @@ import static androidrubick.android.io.IOOp.FILE;
                 IOUtils.close(reader);
             }
         }
-        r2w(reader, writer);
+        return r2w(reader, writer);
     }
 
-    private void i2o(InputStream inputStream, OutputStream outputStream) {
+    private boolean i2o(InputStream inputStream, OutputStream outputStream) {
         long readTotal = 0;
         try {
             byte[] buf = new byte[bufferSize];
@@ -208,7 +199,7 @@ import static androidrubick.android.io.IOOp.FILE;
             }
         } catch (Throwable e) {
             performError(e, readTotal, BufferType.Byte);
-            return;
+            return false;
         } finally {
             if (closeOut) {
                 IOUtils.close(outputStream);
@@ -218,6 +209,7 @@ import static androidrubick.android.io.IOOp.FILE;
             }
         }
         performComplete(readTotal, BufferType.Byte);
+        return true;
     }
 
     private void performProgress(long readThisTime, long readTotal, BufferType type) {
