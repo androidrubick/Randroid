@@ -1,6 +1,7 @@
 package androidrubick.android.io;
 
 import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 
 import java.nio.charset.Charset;
 
@@ -88,7 +89,7 @@ import androidrubick.base.utils.DummyRuntimeException;
 
     }
 
-    IOOpBase(IOOpBase<?> raw) {
+    IOOpBase(@NonNull IOOpBase<?> raw) {
         bufferSize = raw.bufferSize;
         charset = raw.charset;
         closeIn = raw.closeIn;

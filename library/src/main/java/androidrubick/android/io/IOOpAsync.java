@@ -1,5 +1,7 @@
 package androidrubick.android.io;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -18,7 +20,7 @@ public class IOOpAsync extends IOOpBase<IOOpAsync> {
     private final Object mFromObj;
 
     private volatile boolean mRecycleable;
-    /*package*/ IOOpAsync(IOOp raw, int fromType, Object fromObj) {
+    /*package*/ IOOpAsync(@NonNull IOOpBase<?> raw, int fromType, Object fromObj) {
         super(raw);
         mFromType = fromType;
         mFromObj = fromObj;

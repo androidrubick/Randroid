@@ -255,10 +255,7 @@ public class DeviceInfos {
             }
         }
         File extCacheDir = ARContext.app().getExternalCacheDir();
-        if (Objects.isNull(extCacheDir) || Files.exists(extCacheDir)) {
-            return null;
-        }
-        return ArraysCompat.by(extCacheDir);
+        return Objects.isNull(extCacheDir) ? null : ArraysCompat.by(extCacheDir);
     }
 
 }

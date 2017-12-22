@@ -13,7 +13,7 @@ import android.support.annotation.Nullable;
  *
  * @since 1.0.0
  */
-public class BmResLoader implements BitmapLoader {
+public class BmResLoader extends BaseBitmapLoader implements BitmapLoader {
 
     private Context mContext;
     private int mRes;
@@ -31,7 +31,7 @@ public class BmResLoader implements BitmapLoader {
      * @since 1.0.0
      */
     @Override
-    public Bitmap load(@Nullable BitmapFactory.Options options) {
+    protected Bitmap load0(@Nullable BitmapFactory.Options options) throws Throwable {
         if (null == mContext) {
             return null;
         }

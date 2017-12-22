@@ -15,7 +15,7 @@ import androidrubick.android.io.Files;
  *
  * @since 1.0.0
  */
-public class BmFileLoader implements BitmapLoader {
+public class BmFileLoader extends BaseBitmapLoader implements BitmapLoader {
 
     private File mFile;
 
@@ -31,7 +31,7 @@ public class BmFileLoader implements BitmapLoader {
      * @since 1.0.0
      */
     @Override
-    public Bitmap load(@Nullable BitmapFactory.Options options) {
+    protected Bitmap load0(@Nullable BitmapFactory.Options options) throws Throwable {
         if (null == mFile || !Files.exists(mFile) || !mFile.isFile()) {
             return null;
         }
