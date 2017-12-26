@@ -117,7 +117,7 @@ import static androidrubick.android.io.IOOpBase.FILE;
                 case C_STREAM * 10 + C_STREAM:
                     return r2w((Reader) fromObj, (Writer) toObj);
                 default:
-                    throw new IllegalArgumentException("invalid fromType or toType");
+                    throw new IllegalArgumentException("Invalid fromType or toType");
             }
         } catch (Throwable e) {
             release(fromType, fromObj, toType, toObj);

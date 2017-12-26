@@ -70,10 +70,7 @@ public class Views {
     }
 
     private static boolean isVisibilityEqual(View view, int visibility) {
-        if (null == view) {
-            return false;
-        }
-        return view.getVisibility() == visibility;
+        return null != view && view.getVisibility() == visibility;
     }
 
     /**

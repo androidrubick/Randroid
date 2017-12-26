@@ -26,6 +26,11 @@ import androidrubick.base.logging.ARLogger;
 public class Bitmaps {
 
     /**
+     *
+     * catch any exceptions;
+     *
+     * return null, if any error occurs;
+     *
      * @since 1.0.0
      */
     public static Bitmap loadIgnoreExc(BitmapLoader loader, BitmapFactory.Options options) {
@@ -51,6 +56,11 @@ public class Bitmaps {
     }
 
     /**
+     *
+     * determine scale factor from target {@code param} with the {@link BitmapLoader loader}
+     *
+     * provided
+     *
      * @param loader 图片加载器
      * @param param  如果获取到宽高，则相应地会给{@link DecodeParam#outWidth}
      *               和{@link DecodeParam#outHeight}赋值；如果发生错误或获取不到，两个值为-1

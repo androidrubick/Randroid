@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import androidrubick.android.app.ARContext;
+import androidrubick.base.utils.ArraysCompat;
 import androidrubick.base.utils.Objects;
 
 /**
@@ -39,7 +40,7 @@ public class Broadcasts {
      * @since 1.0.0
      */
     public static void registerReceiver(BroadcastReceiver receiver, String...actions) {
-        if (Objects.isNull(receiver) || Objects.isEmpty(actions)) {
+        if (Objects.isNull(receiver) || ArraysCompat.isEmpty(actions)) {
             return ;
         }
         IntentFilter filter = new IntentFilter();
@@ -76,7 +77,7 @@ public class Broadcasts {
      * 注销指定广播
      */
     public static void unregisterReceiver(BroadcastReceiver...receivers) {
-        if (Objects.isEmpty(receivers)) {
+        if (ArraysCompat.isEmpty(receivers)) {
             return ;
         }
 

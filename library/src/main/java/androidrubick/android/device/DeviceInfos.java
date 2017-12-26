@@ -11,7 +11,6 @@ import android.view.WindowManager;
 import java.io.File;
 
 import androidrubick.android.app.ARContext;
-import androidrubick.android.io.Files;
 import androidrubick.android.utils.AndroidUtils;
 import androidrubick.base.text.Strings;
 import androidrubick.base.utils.ArraysCompat;
@@ -99,9 +98,8 @@ public class DeviceInfos {
      * @since 1.0
      */
     public static String deviceResolution(String linkMark) {
-        int width = screenWidth();
-        int height = screenHeight();
-        return width + linkMark + height;
+        getDisplay();
+        return sDisplayWidth + linkMark + sDisplayHeight;
     }
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

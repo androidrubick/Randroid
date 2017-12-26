@@ -55,8 +55,7 @@ public class ViewHolders {
         SparseArray<View> viewHolder = (SparseArray<View>) tag;
         View childView = viewHolder.get(id);
         if (null == childView) {
-            childView = view.findViewById(id);
-            viewHolder.put(id, childView);
+            viewHolder.put(id, childView = view.findViewById(id));
         }
         return (T) childView;
     }

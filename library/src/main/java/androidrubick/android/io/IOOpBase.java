@@ -7,10 +7,12 @@ import java.nio.charset.Charset;
 
 import androidrubick.base.io.IOConstants;
 import androidrubick.base.utils.DummyRuntimeException;
+import androidrubick.base.utils.Exceptions;
 
 /**
- * {@doc}
- * <p>
+ * base settings
+ *
+ * <p></p>
  * Created by Yin Yong on 2017/12/12.
  *
  * @since 1.0.0
@@ -68,7 +70,7 @@ import androidrubick.base.utils.DummyRuntimeException;
             Charset.forName(charset);
             this.charset = charset;
         } catch (Exception ignore) {
-            throw new DummyRuntimeException(ignore);
+            throw Exceptions.asRuntime(ignore);
         }
         return self();
     }

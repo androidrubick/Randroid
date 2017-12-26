@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import androidrubick.android.app.ARContext;
+import androidrubick.base.utils.ArraysCompat;
 import androidrubick.base.utils.Objects;
 
 /**
@@ -21,9 +22,13 @@ public class LocalBroadcasts {
     private LocalBroadcasts() {}
 
     private static LocalBroadcastManager sLocalBroadcastManager;
-    private synchronized static void checkLocalBroadcastManagerInstance() {
+    private static void checkLocalBroadcastManagerInstance() {
         if (null == sLocalBroadcastManager) {
-            sLocalBroadcastManager = LocalBroadcastManager.getInstance(ARContext.app());
+            synchronized (LocalBroadcasts.class) {
+                if (null == sLocalBroadcastManager) {
+                    sLocalBroadcastManager = LocalBroadcastManager.getInstance(ARContext.app());
+                }
+            }
         }
     }
 
@@ -45,7 +50,7 @@ public class LocalBroadcasts {
      * @since 1.0.0
      */
     public static void registerReceiver(BroadcastReceiver receiver, String...actions) {
-        if (Objects.isNull(receiver) || Objects.isEmpty(actions)) {
+        if (Objects.isNull(receiver) || ArraysCompat.isEmpty(actions)) {
             return ;
         }
         IntentFilter filter = new IntentFilter();
@@ -86,7 +91,7 @@ public class LocalBroadcasts {
      * @since 1.0.0
      */
     public static void unregisterReceiver(BroadcastReceiver...receivers) {
-        if (Objects.isEmpty(receivers)) {
+        if (ArraysCompat.isEmpty(receivers)) {
             return ;
         }
 
