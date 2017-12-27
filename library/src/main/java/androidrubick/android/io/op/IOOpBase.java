@@ -1,4 +1,4 @@
-package androidrubick.android.io;
+package androidrubick.android.io.op;
 
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import java.nio.charset.Charset;
 
 import androidrubick.base.io.IOConstants;
-import androidrubick.base.utils.DummyRuntimeException;
 import androidrubick.base.utils.Exceptions;
 
 /**
@@ -24,6 +23,8 @@ import androidrubick.base.utils.Exceptions;
     }
 
     /**
+     * default value is {@code true}
+     *
      * @param val whether close input stream / reader
      * @since 1.0
      */
@@ -33,6 +34,8 @@ import androidrubick.base.utils.Exceptions;
     }
 
     /**
+     * default value is {@code true}
+     *
      * @param val whether close output stream / writer
      * @since 1.0
      */
@@ -51,7 +54,9 @@ import androidrubick.base.utils.Exceptions;
     }
 
     /**
-     * buffer size used when transforming
+     * buffer size used when transforming;
+     *
+     * default size is {@link IOConstants#DEF_BUFFER_SIZE}
      *
      * @since 1.0
      */
@@ -61,7 +66,9 @@ import androidrubick.base.utils.Exceptions;
     }
 
     /**
-     * char set of char-related operations
+     * char set of char-related operations;
+     *
+     * default charset is {@link IOConstants#DEF_CHARSET_NAME}
      *
      * @since 1.0
      */

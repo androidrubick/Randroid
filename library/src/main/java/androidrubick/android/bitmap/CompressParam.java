@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 /**
  * 保存{@link Bitmap}时，使用该压缩参数
  * <p>
- * <p>
+ * </p>
  * Created by Yin Yong on 2017/11/15.
  *
  * @since 1.0.0

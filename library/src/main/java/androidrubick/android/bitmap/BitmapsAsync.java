@@ -15,7 +15,7 @@ import androidrubick.android.bitmap.loader.BitmapLoaderFactory;
 /**
  * 异步处理{@link Bitmap}相关的方法
  * <p>
- * <p>
+ * </p>
  * Created by Yin Yong on 2017/11/15.
  *
  * @since 1.0.0

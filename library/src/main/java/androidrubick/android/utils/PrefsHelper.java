@@ -215,7 +215,7 @@ public class PrefsHelper {
             @Override
             public SharedPreferences.Editor putStringSet(String key, Set<String> values) {
 //                synchronized (mMemoryCache) {
-//                    data.putStringSet(key, value);
+//                    data.putStringArrayList(key, values);
 //                }
 //                editor.putStringSet(key, values);
                 return this;

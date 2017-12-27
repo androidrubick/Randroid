@@ -14,7 +14,9 @@ import androidrubick.android.bitmap.loader.BitmapLoaderFactory;
 import androidrubick.android.io.IOUtils;
 import androidrubick.base.logging.ARLogger;
 
+import static androidrubick.android.bitmap.Bitmaps.calScale;
 import static androidrubick.android.bitmap.Bitmaps.loadIgnoreExc;
+import static androidrubick.android.bitmap.Bitmaps.useConfig;
 
 /**
  * 同步处理{@link Bitmap}相关的方法
@@ -74,10 +76,10 @@ public class BitmapsSync {
         // use dummy
         if (null == param || !param.hasValidPreference()) return loadIgnoreExc(loader, null);
 
-        float scale = Bitmaps.calScale(loader, param);
+        float scale[] = Bitmaps.calScale(loader, param);
         if (param.outWidth <= 0 || param.outHeight <= 0) return null;
 
-        int sampleSize = Math.max(1, Math.round(1f / scale));
+        int sampleSize = Math.max(1, Math.round(1f / Math.min(scale[0], scale[1])));
 
         BitmapFactory.Options sampleOps = new BitmapFactory.Options();
         sampleOps.inSampleSize = sampleSize;
@@ -92,8 +94,8 @@ public class BitmapsSync {
         final int w = bm.getWidth();
         final int h = bm.getHeight();
 
-        final int targetW = (int) (param.outWidth * scale);
-        final int targetH = (int) (param.outHeight * scale);
+        final int targetW = (int) (param.outWidth * scale[0]);
+        final int targetH = (int) (param.outHeight * scale[1]);
 
         // 五分之一的出入
         final float minDeltaScale = 0.2f;
@@ -155,25 +157,22 @@ public class BitmapsSync {
      */
     @Nullable
     public static Bitmap scale(Bitmap bm, @FloatRange(from = 0, fromInclusive = false) float scale) {
-        if (null == bm || scale <= 0f) {
-            return null;
-        }
-        int w = (int) (bm.getWidth() * scale);
-        int h = (int) (bm.getHeight() * scale);
-        try {
-            Bitmap.Config config = bm.getConfig();
-            if (null == config) {
-                config = Bitmap.Config.RGB_565;
-            }
-            Bitmap result = Bitmap.createBitmap(w, h, config);
-            Canvas canvas = new Canvas(result);
-            canvas.scale(scale, scale);
-            canvas.drawBitmap(bm, 0, 0, null);
-            return result;
-        } catch (Throwable e) {
-            ARLogger.warning("BitmapsSync scale error", e);
-            return null;
-        }
+        return resize(bm, DecodeParam.preferredScale(scale));
+    }
+
+    /**
+     * 单次缩放图片，如果成功，返回缩放后的图片；如果失败，返回null
+     *
+     * @param bm    源图片
+     * @param scaleX X缩放比率，(0, +∞)
+     * @param scaleY Y缩放比率，(0, +∞)
+     * @return 如果创建成功，返回新的图片
+     * @since 1.0.0
+     */
+    @Nullable
+    public static Bitmap scale(Bitmap bm, @FloatRange(from = 0, fromInclusive = false) float scaleX,
+                               @FloatRange(from = 0, fromInclusive = false) float scaleY) {
+        return resize(bm, DecodeParam.preferredScale(scaleX, scaleY));
     }
 
     /**
@@ -187,19 +186,29 @@ public class BitmapsSync {
      */
     @Nullable
     public static Bitmap resize(Bitmap bm, int width, int height) {
-        if (null == bm || width <= 0 || height <= 0) {
+        return resize(bm, DecodeParam.preferredSize(width, height));
+    }
+
+    /**
+     * 单次调整图片大小，如果成功，返回调整大小后的图片；如果失败，返回null
+     *
+     * @param bm     源图片
+     * @param param  改变尺寸的参数
+     * @return 如果创建成功，返回新的图片
+     * @since 1.0.0
+     */
+    public static Bitmap resize(Bitmap bm, DecodeParam param) {
+        if (null == bm) {
             return null;
         }
-        float w = Math.max(1, bm.getWidth());
-        float h = Math.max(1, bm.getHeight());
-        float scaleX = width / w;
-        float scaleY = height / h;
+        final int width = bm.getWidth(), height = bm.getHeight();
+        float[] scale = calScale(width, height, param);
+        float scaleX = scale[0];
+        float scaleY = scale[1];
+        int w = (int) (width * scaleX);
+        int h = (int) (height * scaleY);
         try {
-            Bitmap.Config config = bm.getConfig();
-            if (null == config) {
-                config = Bitmap.Config.RGB_565;
-            }
-            Bitmap result = Bitmap.createBitmap(width, height, config);
+            Bitmap result = Bitmap.createBitmap(w, h, useConfig(bm, Bitmap.Config.RGB_565));
             Canvas canvas = new Canvas(result);
             canvas.scale(scaleX, scaleY);
             canvas.drawBitmap(bm, 0, 0, null);

@@ -32,7 +32,7 @@ public class BmFileLoader extends BaseBitmapLoader implements BitmapLoader {
      */
     @Override
     protected Bitmap load0(@Nullable BitmapFactory.Options options) throws Throwable {
-        if (null == mFile || !Files.exists(mFile) || !mFile.isFile()) {
+        if (null == mFile || !mFile.isFile()) {
             return null;
         }
         return BitmapFactory.decodeFile(mFile.getAbsolutePath(), options);

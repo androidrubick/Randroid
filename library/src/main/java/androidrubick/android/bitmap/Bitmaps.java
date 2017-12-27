@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.File;
 
@@ -14,6 +16,7 @@ import androidrubick.android.bitmap.loader.BitmapLoader;
 import androidrubick.android.device.DeviceInfos;
 import androidrubick.android.io.Files;
 import androidrubick.base.logging.ARLogger;
+import androidrubick.base.utils.ArraysCompat;
 
 /**
  * 工具类，用于{@link Bitmap}相关的操作
@@ -56,7 +59,51 @@ public class Bitmaps {
     }
 
     /**
-     *
+     * @param source maybe null, use {@link Bitmap.Config#ARGB_8888} instead
+     * @return
+     */
+    @NonNull
+    public static Bitmap.Config useConfig(@Nullable Bitmap source) {
+        return useConfig(source, Bitmap.Config.ARGB_8888);
+    }
+
+    /**
+     * @param source maybe null, use {@code defConfig} instead
+     */
+    @NonNull
+    public static Bitmap.Config useConfig(@Nullable Bitmap source, @NonNull Bitmap.Config defConfig) {
+        Bitmap.Config newConfig = defConfig;
+        Bitmap.Config config = null;
+        if (null != source) {
+            config = source.getConfig();
+        }
+        // GIF files generate null configs, assume ARGB_8888
+        if (null != config) {
+            switch (config) {
+                case RGB_565:
+                    newConfig = Bitmap.Config.RGB_565;
+                    break;
+                case ALPHA_8:
+                    newConfig = Bitmap.Config.ALPHA_8;
+                    break;
+                case ARGB_4444:
+                case ARGB_8888:
+                    newConfig = Bitmap.Config.ARGB_8888;
+                    break;
+                default:
+                    newConfig = defConfig;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        if (config == Bitmap.Config.RGBA_F16) {
+                            newConfig = Bitmap.Config.RGBA_F16;
+                        }
+                    }
+                    break;
+            }
+        }
+        return newConfig;
+    }
+
+    /**
      * determine scale factor from target {@code param} with the {@link BitmapLoader loader}
      *
      * provided
@@ -64,41 +111,66 @@ public class Bitmaps {
      * @param loader 图片加载器
      * @param param  如果获取到宽高，则相应地会给{@link DecodeParam#outWidth}
      *               和{@link DecodeParam#outHeight}赋值；如果发生错误或获取不到，两个值为-1
-     * @return 根据参数{@code param}计算得到的缩放比率
+     * @return 2-len array, 根据参数{@code param}计算得到的缩放比率
      * @since 1.0.0
      */
-    public static float calScale(BitmapLoader loader, DecodeParam param) {
-        float scale = 1;
+    public static float[] calScale(BitmapLoader loader, DecodeParam param) {
         if (null == param || !param.hasValidPreference()) {
-            return scale;
+            return ArraysCompat.by(1f, 1f);
         }
 
         param.outWidth = -1;
         param.outHeight = -1;
-
         // check size first
         BitmapFactory.Options sizeOps = decodeSize(loader);
-        if (sizeOps.outWidth <= 0 || sizeOps.outHeight <= 0) return scale;
+        if (sizeOps.outWidth <= 0 || sizeOps.outHeight <= 0) return ArraysCompat.by(1f, 1f);
 
         param.outWidth = sizeOps.outWidth;
         param.outHeight = sizeOps.outHeight;
+        return calScale(sizeOps.outWidth, sizeOps.outHeight, param);
+    }
+
+    /**
+     * determine scale factor from target {@code param} with the specific
+     * {@code w}, {@code h}
+     *
+     * @param w     宽
+     * @param h     高
+     * @return 2-len array, 根据参数{@code param}计算得到的缩放比率
+     * @since 1.0.0
+     */
+    public static float[] calScale(int w, int h, DecodeParam param) {
+        float scaleX = 1, scaleY = 1;
+        if (null == param || !param.hasValidPreference()) {
+            return ArraysCompat.by(scaleX, scaleY);
+        }
+        if (w < 0 || h < 0) {
+            return ArraysCompat.by(scaleX, scaleY);
+        }
+
         if (param.hasPreferredSize()) {
             float scaleW = Integer.MAX_VALUE;
             if (param.inPreferredWidth > 0) {
-                scaleW = (float) param.inPreferredWidth / (float) sizeOps.outWidth;
+                scaleW = (float) param.inPreferredWidth / (float) w;
             }
             float scaleH = Integer.MAX_VALUE;
             if (param.inPreferredHeight > 0) {
-                scaleH = (float) param.inPreferredHeight / (float) sizeOps.outHeight;
+                scaleH = (float) param.inPreferredHeight / (float) h;
             }
-            scale = Math.min(scaleW, scaleH);
+            if (param.inUniformScale) {
+                scaleX = scaleY = Math.min(scaleW, scaleH);
+            } else {
+                scaleX = scaleW;
+                scaleY = scaleH;
+            }
         } else if (param.hasPreferredScale()) {
-            scale = param.inScale;
+            scaleX = param.inScaleX;
+            scaleY = param.inScaleY;
         } else if (param.hasPreferredPixels()) {
-            double ms = (double) param.inPreferredPixels / (double) (sizeOps.outWidth * sizeOps.outHeight);
-            scale = (float) Math.pow(ms, 0.5);
+            double ms = (double) param.inPreferredPixels / (double) (w * h);
+            scaleX = scaleY = (float) Math.pow(ms, 0.5);
         }
-        return scale > 0 ? scale : 1;
+        return ArraysCompat.by(scaleX > 0 ? scaleX : 1, scaleY > 0 ? scaleY : 1);
     }
 
     /**

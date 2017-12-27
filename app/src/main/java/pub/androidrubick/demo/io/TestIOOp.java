@@ -7,8 +7,8 @@ import java.io.File;
 
 import androidrubick.android.app.ARContext;
 import androidrubick.android.io.BufferType;
-import androidrubick.android.io.IOCallback;
-import androidrubick.android.io.IOOp;
+import androidrubick.android.io.op.IOCallback;
+import androidrubick.android.io.op.IOOp;
 import androidrubick.base.logging.ARLogger;
 
 /**

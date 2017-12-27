@@ -1,6 +1,8 @@
-package androidrubick.android.io;
+package androidrubick.android.io.op;
 
 import android.support.annotation.NonNull;
+
+import androidrubick.android.io.BufferType;
 
 /**
  * IO进度的回调
