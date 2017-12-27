@@ -3,7 +3,6 @@ package androidrubick.android.bitmap;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 
 import java.io.File;
@@ -79,6 +78,8 @@ public class BitmapsSync {
         float scale[] = Bitmaps.calScale(loader, param);
         if (param.outWidth <= 0 || param.outHeight <= 0) return null;
 
+        final int ow = param.outWidth;
+        final int oh = param.outHeight;
         int sampleSize = Math.max(1, Math.round(1f / Math.min(scale[0], scale[1])));
 
         BitmapFactory.Options sampleOps = new BitmapFactory.Options();
@@ -94,27 +95,30 @@ public class BitmapsSync {
         final int w = bm.getWidth();
         final int h = bm.getHeight();
 
-        final int targetW = (int) (param.outWidth * scale[0]);
-        final int targetH = (int) (param.outHeight * scale[1]);
+        // get result size
+        param.outWidth = w;
+        param.outHeight = h;
+
+        final int targetW = (int) (ow * scale[0]);
+        final int targetH = (int) (oh * scale[1]);
 
         // 五分之一的出入
         final float minDeltaScale = 0.2f;
-        final int minDelta = Math.min((int) (param.outWidth * minDeltaScale),
-                (int) (param.outHeight * minDeltaScale));
+        final int minDelta = Math.min((int) (w * minDeltaScale), (int) (h * minDeltaScale));
 
         Bitmap reScaleBm = null;
-        if (w - targetW > minDelta || h - targetH > minDelta) {
+        if (Math.abs(w - targetW) > minDelta || Math.abs(h - targetH) > minDelta) {
             // 如果获得的图片大小比实际需要的大，需要进行resize
-            float reScale = (float) targetW / (float) w;
-            reScaleBm = scale(bm, reScale);
-        } else if (targetW - w > minDelta || targetH - h > minDelta) {
-            // 如果获得的图片大小比实际需要的小，需要进行resize
-            float reScale = (float) targetW / (float) w;
-            reScaleBm = scale(bm, reScale);
+            reScaleBm = resize(bm, DecodeParam.preferredScale((float) targetW / (float) w,
+                    (float) targetH / (float) h));
         }
         if (null != reScaleBm) {
             bm.recycle();
             bm = reScaleBm;
+
+            // get result size
+            param.outWidth = bm.getWidth();
+            param.outHeight = bm.getHeight();
         }
         return bm;
     }
@@ -145,48 +149,6 @@ public class BitmapsSync {
         } finally {
             IOUtils.close(outputStream);
         }
-    }
-
-    /**
-     * 单次缩放图片，如果成功，返回缩放后的图片；如果失败，返回null
-     *
-     * @param bm    源图片
-     * @param scale 缩放比率，(0, +∞)
-     * @return 如果创建成功，返回新的图片
-     * @since 1.0.0
-     */
-    @Nullable
-    public static Bitmap scale(Bitmap bm, @FloatRange(from = 0, fromInclusive = false) float scale) {
-        return resize(bm, DecodeParam.preferredScale(scale));
-    }
-
-    /**
-     * 单次缩放图片，如果成功，返回缩放后的图片；如果失败，返回null
-     *
-     * @param bm    源图片
-     * @param scaleX X缩放比率，(0, +∞)
-     * @param scaleY Y缩放比率，(0, +∞)
-     * @return 如果创建成功，返回新的图片
-     * @since 1.0.0
-     */
-    @Nullable
-    public static Bitmap scale(Bitmap bm, @FloatRange(from = 0, fromInclusive = false) float scaleX,
-                               @FloatRange(from = 0, fromInclusive = false) float scaleY) {
-        return resize(bm, DecodeParam.preferredScale(scaleX, scaleY));
-    }
-
-    /**
-     * 单次调整图片大小，如果成功，返回调整大小后的图片；如果失败，返回null
-     *
-     * @param bm     源图片
-     * @param width  调整后的宽度
-     * @param height 调整后的高度
-     * @return 如果创建成功，返回新的图片
-     * @since 1.0.0
-     */
-    @Nullable
-    public static Bitmap resize(Bitmap bm, int width, int height) {
-        return resize(bm, DecodeParam.preferredSize(width, height));
     }
 
     /**

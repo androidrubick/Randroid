@@ -1,7 +1,6 @@
 package androidrubick.android.bitmap;
 
 import android.graphics.Bitmap;
-import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 
 import java.io.File;
@@ -113,41 +112,20 @@ public class BitmapsAsync {
     }
 
     /**
-     * 异步单次缩放图片，如果成功，返回缩放后的图片；如果失败，返回null
-     *
-     * @param bm    源图片
-     * @param scale 缩放比率
-     * @param cb    回调，如果创建成功，返回新的图片
-     * @since 1.0.0
-     */
-    public static void scale(final Bitmap bm, @FloatRange(from = 0, to = 1, fromInclusive = false) final float scale,
-                             final OpPCallback<Bitmap> cb) {
-        if (null == cb) return;
-
-        new Async(cb) {
-            @Override
-            protected Bitmap doInBackground(Void... params) {
-                return BitmapsSync.scale(bm, scale);
-            }
-        }.execute();
-    }
-
-    /**
      * 异步单次调整图片大小，如果成功，返回调整大小后的图片；如果失败，返回null
      *
      * @param bm     源图片
-     * @param width  调整后的宽度
-     * @param height 调整后的高度
-     * @return 如果创建成功，返回新的图片
+     * @param param  改变尺寸的参数
+     * @param cb     回调，如果创建成功，返回新的图片
      * @since 1.0.0
      */
-    public static void resize(final Bitmap bm, final int width, final int height, final OpPCallback<Bitmap> cb) {
+    public static void resize(final Bitmap bm, final DecodeParam param, final OpPCallback<Bitmap> cb) {
         if (null == cb) return;
 
         new Async(cb) {
             @Override
             protected Bitmap doInBackground(Void... params) {
-                return BitmapsSync.resize(bm, width, height);
+                return BitmapsSync.resize(bm, param);
             }
         }.execute();
     }
