@@ -28,7 +28,6 @@ dependencies {
     compile RX_ANROID_LIB
     compile AR_BASE_LIB
     // compile AR_BASE_LIB
-    compile AR_ASYNC_LIB
 }
 
 if (propertyTrue('AR_SINGLE_LIB')) {

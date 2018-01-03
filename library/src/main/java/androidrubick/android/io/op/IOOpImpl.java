@@ -15,9 +15,11 @@ import java.io.Reader;
 import java.io.Writer;
 
 import androidrubick.android.async.ARSchedulers;
-import androidrubick.android.async.AsyncProxy;
 import androidrubick.android.io.BufferType;
 import androidrubick.android.io.IOUtils;
+
+import static androidrubick.android.async.MainLooperProxy.isProxy;
+import static androidrubick.android.async.MainLooperProxy.wrap;
 
 /**
  * <p></p>
@@ -80,8 +82,8 @@ import androidrubick.android.io.IOUtils;
     }
 
     void async(final int fromType, final Object fromObj, final int toType, final Object toObj) {
-        if (!AsyncProxy.isAsyncProxy(this.cb)) {
-            this.cb = null != cb ? (IOCallback) AsyncProxy.async(cb) : cb;
+        if (!isProxy(this.cb)) {
+            this.cb = null != cb ? (IOCallback) wrap(cb) : cb;
         }
         ARSchedulers.io(new Runnable() {
             @Override
