@@ -36,9 +36,8 @@ public class BitmapCache extends LinkedHashMap<String, Bitmap> {
     private int pixels;
 
     /**
-     *
-     * @param mc max count of {@link Bitmap}
-     * @param mp max pixels
+     * @param mc  max count of {@link Bitmap}
+     * @param mp  max pixels
      * @param mtp max total pixels
      * @since 1.0.0
      */

@@ -26,27 +26,10 @@ import android.graphics.Bitmap;
 public interface BitmapTrySize {
 
     /**
-     * this method may throw OOM;
-     * when OOM occurs, new try will follow.
-     *
-     * <p/>
-     *
-     * 当OOM时，将进行下一轮尝试
-     *
-     * @param scale   scale factor, (0, +)
-     * @param originW origin width
-     * @param originH origin height
-     * @param w       new width to try
-     * @param h       new height to try
-     * @since 1.0.0
-     */
-    Bitmap trySize(float scale, int originW, int originH, int w, int h);
-
-    /**
-     * @param bm result {@link Bitmap}
+     * @param bm    result {@link Bitmap}
      * @param scale result scale factor, (0, +)
-     * @param w result w
-     * @param h result h
+     * @param w     result w
+     * @param h     result h
      * @since 1.0.0
      */
     void got(Bitmap bm, float scale, int w, int h);

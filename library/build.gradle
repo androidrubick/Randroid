@@ -26,7 +26,7 @@ dependencies {
     compile SUPPORT_V4_LIB
     compile RX_JAVA_LIB
     compile RX_ANROID_LIB
-    compile project(':randroid-base')
+    compile AR_BASE_LIB
     // compile AR_BASE_LIB
     compile AR_ASYNC_LIB
 }

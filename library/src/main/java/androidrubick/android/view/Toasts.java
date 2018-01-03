@@ -9,7 +9,7 @@ import androidrubick.android.app.ARContext;
 
 /**
  *
- * helper for show toast
+ * helper: show toast
  *
  * <p>
  * Created by Yin Yong on 2017/11/24.

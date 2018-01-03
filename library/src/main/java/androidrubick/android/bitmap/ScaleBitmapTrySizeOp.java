@@ -4,20 +4,20 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 /**
- * use scale raw bitmap to try size
+ * try a non-OOM size by scaling the origin bitmap
  * <p>
  * </p>
  * Created by Yin Yong on 2017/11/15.
  *
  * @since 1.0.0
  */
-public class ScaleTrySize extends TrySizeAdapter implements BitmapTrySize {
+public class ScaleBitmapTrySizeOp extends BitmapTrySizeOp implements BitmapTrySize {
 
     private Bitmap mBm;
     /**
      * @since 1.0.0
      */
-    public ScaleTrySize(@NonNull Bitmap bm) {
+    public ScaleBitmapTrySizeOp(@NonNull Bitmap bm) {
         super(bm.getWidth(), bm.getHeight());
         mBm = bm;
     }

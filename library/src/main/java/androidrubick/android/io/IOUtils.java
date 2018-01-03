@@ -8,7 +8,11 @@ import java.io.IOException;
 import static androidrubick.base.utils.Objects.getAs;
 
 /**
- * 工具类，封装简单的I/O转换操作
+ * I/O操作工具类
+ *
+ * <p></p>
+ *
+ * utils for I/O
  *
  * @author Yin Yong
  *

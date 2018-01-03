@@ -253,7 +253,7 @@ public class DeviceInfos {
             }
         }
         File extCacheDir = ARContext.app().getExternalCacheDir();
-        return Objects.isNull(extCacheDir) ? null : ArraysCompat.by(extCacheDir);
+        return Objects.isNull(extCacheDir) ? null : ArraysCompat.byElements(extCacheDir);
     }
 
 }

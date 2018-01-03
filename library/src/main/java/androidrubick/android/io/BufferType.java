@@ -1,8 +1,7 @@
 package androidrubick.android.io;
 
 /**
- * {@doc}
- * <p>
+ * <p></p>
  * Created by Yin Yong on 2017/11/28.
  *
  * @since 1.0.0

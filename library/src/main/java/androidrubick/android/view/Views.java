@@ -4,7 +4,9 @@ import android.view.View;
 import android.widget.AdapterView;
 
 /**
- * {@doc}
+ *
+ * helper: operations with view
+ *
  * <p/>
  * Created by Yin Yong on 2017/3/19.
  *

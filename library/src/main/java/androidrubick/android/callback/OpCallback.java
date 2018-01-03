@@ -1,4 +1,4 @@
-package androidrubick.android.async;
+package androidrubick.android.callback;
 
 /**
  * callback for common operations

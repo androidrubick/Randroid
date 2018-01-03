@@ -5,13 +5,15 @@ import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 
 /**
- * {@doc}
+ *
+ * try a non-OOM size {@link Bitmap} with some user settings
+ *
  * <p>
  * Created by Yin Yong on 2017/11/15.
  *
  * @since 1.0.0
  */
-public abstract class TrySizeAdapter implements BitmapTrySize {
+public abstract class BitmapTrySizeOp implements BitmapTrySize {
 
     private final int mOriginWidth;
     private final int mOriginHeight;
@@ -24,7 +26,7 @@ public abstract class TrySizeAdapter implements BitmapTrySize {
      * @param originHeight origin height, (0, +)
      * @since 1.0.0
      */
-    public TrySizeAdapter(int originWidth, int originHeight) {
+    public BitmapTrySizeOp(int originWidth, int originHeight) {
         mOriginWidth = Math.max(0, originWidth);
         mOriginHeight = Math.max(0, originHeight);
     }
@@ -33,7 +35,7 @@ public abstract class TrySizeAdapter implements BitmapTrySize {
      * @param scale (0, +)
      * @since 1.0.0
      */
-    public TrySizeAdapter preferredScale(
+    public BitmapTrySizeOp preferredScale(
             @FloatRange(from = 0, fromInclusive = false) float scale
     ) {
         mPreferredScaleStart = Math.max(0, scale);
@@ -46,7 +48,7 @@ public abstract class TrySizeAdapter implements BitmapTrySize {
      * @param scaleEnd   (0, +)
      * @since 1.0.0
      */
-    public TrySizeAdapter preferredScaleRange(
+    public BitmapTrySizeOp preferredScaleRange(
             @FloatRange(from = 0, fromInclusive = false) float scaleStart,
             @FloatRange(from = 0, fromInclusive = false) float scaleEnd
     ) {
@@ -61,7 +63,7 @@ public abstract class TrySizeAdapter implements BitmapTrySize {
      * @param decrement decrement factor, (0, +), default is 0.05
      * @since 1.0.0
      */
-    public TrySizeAdapter decBy(@FloatRange(from = 0, fromInclusive = false) float decrement) {
+    public BitmapTrySizeOp decBy(@FloatRange(from = 0, fromInclusive = false) float decrement) {
         mDecrement = Math.max(0, decrement);
         return this;
     }
@@ -100,16 +102,21 @@ public abstract class TrySizeAdapter implements BitmapTrySize {
     }
 
     /**
-     * this method may throw OOM
+     * this method may throw OOM;
+     * when OOM occurs, new try will follow.
      *
-     * @param scale   scale factor, [0, 1]
+     * <p/>
+     *
+     * 当OOM时，将进行下一轮尝试
+     *
+     * @param scale   scale factor, (0, +)
      * @param originW origin width
      * @param originH origin height
      * @param w       new width to try
      * @param h       new height to try
      * @since 1.0.0
      */
-    public abstract Bitmap trySize(float scale, int originW, int originH, int w, int h);
+    protected abstract Bitmap trySize(float scale, int originW, int originH, int w, int h);
 
     /**
      * @since 1.0.0

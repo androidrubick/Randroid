@@ -5,7 +5,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 /**
- * {@doc}
+ * helper: set text to {@link TextView} or {@link EditText}
  * <p></p>
  * Created by Yin Yong on 2017/12/22.
  *

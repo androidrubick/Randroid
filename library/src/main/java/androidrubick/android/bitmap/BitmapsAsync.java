@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import java.io.File;
 
 import androidrubick.android.async.AsyncOp;
-import androidrubick.android.async.OpCallback;
-import androidrubick.android.async.OpPCallback;
+import androidrubick.android.callback.OpCallback;
+import androidrubick.android.callback.OpPCallback;
 import androidrubick.android.bitmap.loader.BitmapLoader;
 import androidrubick.android.bitmap.loader.BitmapLoaderFactory;
 
