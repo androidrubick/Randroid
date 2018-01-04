@@ -54,8 +54,8 @@ public class LocalBroadcasts {
             return ;
         }
         IntentFilter filter = new IntentFilter();
-        for (int i = 0; i < actions.length; i++) {
-            filter.addAction(actions[i]);
+        for (String action : actions) {
+            filter.addAction(action);
         }
         registerReceiver(receiver, filter);
     }
@@ -82,7 +82,7 @@ public class LocalBroadcasts {
         checkLocalBroadcastManagerInstance();
         try {
             sLocalBroadcastManager.unregisterReceiver(receiver);
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
     }
 
     /**
@@ -107,7 +107,7 @@ public class LocalBroadcasts {
      */
     public static void sendBroadcast(String action) {
         sendBroadcast(new Intent(action));
-    };
+    }
 
     /**
      * 发送指定广播

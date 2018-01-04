@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import java.nio.charset.Charset;
 
+import androidrubick.android.io.BufferType;
 import androidrubick.base.io.IOConstants;
 import androidrubick.base.utils.Exceptions;
 
@@ -61,7 +62,21 @@ import androidrubick.base.utils.Exceptions;
      * @since 1.0
      */
     public final Self bufferSize(@IntRange(from = 1) int bufferSize) {
+        return bufferSize(bufferSize, BufferType.Byte);
+    }
+
+    /**
+     * buffer size used when transforming;
+     *
+     * default size is {@link IOConstants#DEF_BUFFER_SIZE}
+     *
+     * @since 1.0
+     */
+    public final Self bufferSize(@IntRange(from = 1) int bufferSize, BufferType type) {
         this.bufferSize = bufferSize;
+        if (null != type) {
+            bufferType = type;
+        }
         return self();
     }
 
@@ -89,6 +104,7 @@ import androidrubick.base.utils.Exceptions;
     static final int C_STREAM = 3;
 
     int bufferSize = IOConstants.DEF_BUFFER_SIZE;
+    BufferType bufferType = BufferType.Byte;
     String charset = IOConstants.DEF_CHARSET_NAME;
     boolean closeIn = true;
     boolean closeOut = true;
@@ -100,6 +116,7 @@ import androidrubick.base.utils.Exceptions;
 
     IOOpBase(@NonNull IOOpBase<?> raw) {
         bufferSize = raw.bufferSize;
+        bufferType = raw.bufferType;
         charset = raw.charset;
         closeIn = raw.closeIn;
         closeOut = raw.closeOut;

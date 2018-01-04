@@ -138,7 +138,7 @@ public class IOOp extends IOOpBase<IOOp> {
         }
         mRecycleable = true;
 
-        return new IOOpImpl(closeIn, closeOut, bufferSize, charset, cb)
+        return new IOOpImpl(closeIn, closeOut, bufferSize, bufferType, charset, cb)
                 .sync(mFromType, mFromObj, toType, toObj);
     }
 

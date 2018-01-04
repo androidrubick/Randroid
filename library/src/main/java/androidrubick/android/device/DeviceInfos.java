@@ -1,5 +1,6 @@
 package androidrubick.android.device;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -197,6 +198,7 @@ public class DeviceInfos {
      * Return null if device ID is not available.
      * @since 1.0
      */
+    @SuppressLint("HardwareIds")
     public static String getIMEI() {
         AndroidUtils.ensurePermission(android.Manifest.permission.READ_PHONE_STATE);
         TelephonyManager tm = (TelephonyManager) ARContext.app()

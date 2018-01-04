@@ -58,7 +58,7 @@ public class IOOpAsync extends IOOpBase<IOOpAsync> {
         }
         mRecycleable = true;
 
-        new IOOpImpl(closeIn, closeOut, bufferSize, charset, cb)
+        new IOOpImpl(closeIn, closeOut, bufferSize, bufferType, charset, cb)
                 .async(mFromType, mFromObj, toType, toObj);
     }
 }

@@ -1,6 +1,7 @@
 package androidrubick.android.io.op;
 
 import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.Closeable;
@@ -32,17 +33,20 @@ import static androidrubick.android.async.MainLooperProxy.wrap;
     private boolean closeOut;
     @IntRange(from = 1)
     private final int bufferSize;
+    private final BufferType bufferType;
     private final String charset;
     @Nullable
     private IOCallback cb;
 
     IOOpImpl(boolean closeIn, boolean closeOut,
              @IntRange(from = 1) int bufferSize,
+             @NonNull BufferType bufferType,
              String charset,
              @Nullable IOCallback cb) {
         this.closeIn = closeIn;
         this.closeOut = closeOut;
         this.bufferSize = bufferSize;
+        this.bufferType = bufferType;
         this.charset = charset;
         this.cb = cb;
     }
@@ -127,7 +131,7 @@ import static androidrubick.android.async.MainLooperProxy.wrap;
     private boolean r2w(Reader reader, Writer writer) {
         long readTotal = 0;
         try {
-            char[] buf = new char[bufferSize];
+            char[] buf = new char[(int) bufferType.toChars(bufferSize)];
             int len;
             while (-1 != (len = reader.read(buf))) {
                 writer.write(buf, 0, len);
@@ -186,7 +190,7 @@ import static androidrubick.android.async.MainLooperProxy.wrap;
     private boolean i2o(InputStream inputStream, OutputStream outputStream) {
         long readTotal = 0;
         try {
-            byte[] buf = new byte[bufferSize];
+            byte[] buf = new byte[(int) bufferType.toBytes(bufferSize)];
             int len;
             while (-1 != (len = inputStream.read(buf))) {
                 outputStream.write(buf, 0, len);

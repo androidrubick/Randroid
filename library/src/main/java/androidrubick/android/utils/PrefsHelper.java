@@ -1,5 +1,6 @@
 package androidrubick.android.utils;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import androidrubick.android.app.ARContext;
+import androidrubick.android.async.ARSchedulers;
 import androidrubick.base.collection.CollectionsCompat;
 
 /**
@@ -173,24 +175,25 @@ public class PrefsHelper {
      */
     protected void onInit(Bundle bundle, SharedPreferences sharedPreferences) {
         Map<String, Object> d = new HashMap<>(sharedPreferences.getAll());
-        if (!CollectionsCompat.isEmpty(d)) {
-            for (Map.Entry<String, Object> entry: d.entrySet()) {
-                final String key = entry.getKey();
-                final Object val = entry.getValue();
-                if (null == val) {
-                    bundle.putString(key, null);
-                } else {
-                    if (val instanceof String) {
-                        bundle.putString(key, (String) val);
-                    } else if (val instanceof Integer) {
-                        bundle.putInt(key, (Integer) val);
-                    } else if (val instanceof Boolean) {
-                        bundle.putBoolean(key, (Boolean) val);
-                    } else if (val instanceof Long) {
-                        bundle.putLong(key, (Long) val);
-                    } else if (val instanceof Float) {
-                        bundle.putFloat(key, (Float) val);
-                    }
+        if (CollectionsCompat.isEmpty(d)) {
+            return;
+        }
+        for (Map.Entry<String, Object> entry: d.entrySet()) {
+            final String key = entry.getKey();
+            final Object val = entry.getValue();
+            if (null == val) {
+                bundle.putString(key, null);
+            } else {
+                if (val instanceof String) {
+                    bundle.putString(key, (String) val);
+                } else if (val instanceof Integer) {
+                    bundle.putInt(key, (Integer) val);
+                } else if (val instanceof Boolean) {
+                    bundle.putBoolean(key, (Boolean) val);
+                } else if (val instanceof Long) {
+                    bundle.putLong(key, (Long) val);
+                } else if (val instanceof Float) {
+                    bundle.putFloat(key, (Float) val);
                 }
             }
         }
@@ -201,8 +204,15 @@ public class PrefsHelper {
      */
     public SharedPreferences.Editor edit() {
         return new SharedPreferences.Editor() {
-            final SharedPreferences.Editor editor = sharedPreferences().edit();
-            final Bundle data = new Bundle(mMemoryCache);
+
+            final SharedPreferences.Editor editor;
+            final Bundle data;
+            {
+                editor = sharedPreferences().edit();
+                synchronized (mMemoryCache) {
+                    data = new Bundle(mMemoryCache);
+                }
+            }
 
             @Override
             public SharedPreferences.Editor putString(String key, String value) {
@@ -265,11 +275,13 @@ public class PrefsHelper {
 
             @Override
             public boolean commit() {
+                // commitToMemory
                 synchronized (mMemoryCache) {
                     mMemoryCache.clear();
                     mMemoryCache.putAll(data);
                 }
-                doInBackground(new Runnable() {
+                ARSchedulers.io(new Runnable() {
+                    @SuppressLint("ApplySharedPref")
                     @Override
                     public void run() {
                         editor.commit();
@@ -283,13 +295,6 @@ public class PrefsHelper {
                 commit();
             }
 
-            private void doInBackground(Runnable runnable) {
-                Thread t = new Thread(runnable);
-                try {
-                    t.setPriority(Thread.MIN_PRIORITY);
-                } catch (Throwable ignore) {}
-                t.start();
-            }
         };
     }
 

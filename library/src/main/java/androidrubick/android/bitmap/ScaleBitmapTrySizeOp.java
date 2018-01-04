@@ -26,7 +26,7 @@ public class ScaleBitmapTrySizeOp extends BitmapTrySizeOp implements BitmapTrySi
      * @since 1.0.0
      */
     @Override
-    public Bitmap trySize(float scale, int originW, int originH, int w, int h) {
+    protected final Bitmap trySize(float scale, int originW, int originH, int w, int h) {
         return BitmapsSync.resize(mBm, DecodeParam.preferredScale(scale));
     }
 }

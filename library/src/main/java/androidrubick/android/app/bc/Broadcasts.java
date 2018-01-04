@@ -44,8 +44,8 @@ public class Broadcasts {
             return ;
         }
         IntentFilter filter = new IntentFilter();
-        for (int i = 0; i < actions.length; i++) {
-            filter.addAction(actions[i]);
+        for (String action : actions) {
+            filter.addAction(action);
         }
         registerReceiver(receiver, filter);
     }
@@ -70,7 +70,7 @@ public class Broadcasts {
     public static void unregisterReceiver(BroadcastReceiver receiver) {
         try {
             ARContext.app().unregisterReceiver(receiver);
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
     }
 
     /**
